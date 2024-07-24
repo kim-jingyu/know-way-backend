@@ -1,4 +1,4 @@
-package com.know.way.user.exception;
+package com.knowway.user.exception;
 
 public class UserException extends RuntimeException{
   public UserException(String message) {

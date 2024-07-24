@@ -1,6 +1,6 @@
-package com.know.way.common.exception;
+package com.knowway.common.exception;
 
-import com.know.way.auth.exception.AuthException;
+import com.knowway.auth.exception.AuthException;
 import io.jsonwebtoken.JwtException;
 import java.util.Collections;
 import java.util.HashMap;

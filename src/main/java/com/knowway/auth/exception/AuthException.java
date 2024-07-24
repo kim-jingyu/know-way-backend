@@ -1,4 +1,4 @@
-package com.know.way.auth.exception;
+package com.knowway.auth.exception;
 
 public class AuthException extends RuntimeException{
 
