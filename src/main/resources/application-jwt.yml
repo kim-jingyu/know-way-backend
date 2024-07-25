@@ -1,4 +1,0 @@
-encrypt:
-  key:
-    access: ${ACCESS_KEY}
-    life-time: ${ACCESS_KEY_LIFE_TIME}

@@ -38,4 +38,3 @@ out/
 
 ### yml ###
 **/application-jwt.yml
-**/application-datasource.yml
