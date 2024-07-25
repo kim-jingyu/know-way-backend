@@ -5,6 +5,7 @@ spring:
     import:
       -  application-datasource.yml
       -  application-jwt.yml
+      -  application-private.yml
 
 logging:
   level:
@@ -14,4 +15,4 @@ logging:
     org.springframework.security.config: DEBUG
 
 application:
-  domain: ${CLIENT_DOMAIN}
+  domain: test

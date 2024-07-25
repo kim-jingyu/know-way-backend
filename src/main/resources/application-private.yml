@@ -1,0 +1,12 @@
+cloud:
+  aws:
+    credentials:
+      accessKey: ${accessKey}
+      secretKey: ${secretKey}
+    s3:
+      bucket: ${bucketName}
+    region:
+      static: ap-northeast-2
+      auto: false
+    stack:
+      auto: false
