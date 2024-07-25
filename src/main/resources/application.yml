@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: know-way
+  config:
+    import:
+      -  application-datasource.yml
+      -  application-jwt.yml
+
+logging:
+  level:
+    root: INFO
+    org.springframework.security: DEBUG
+    org.springframework.security.web: DEBUG
+    org.springframework.security.config: DEBUG
