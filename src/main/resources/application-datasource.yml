@@ -1,0 +1,6 @@
+spring:
+  datasource:
+    jdbc-url: ${DATABASE_PRIMARY_URL}
+    username: ${DATABASE_PRIMARY_USERNAME}
+    password: ${DATABASE_PRIMARY_PASSWORD}
+    driver-class-name: ${DATABASE_PRIMARY_DRIVER}
