@@ -12,3 +12,6 @@ logging:
     org.springframework.security: DEBUG
     org.springframework.security.web: DEBUG
     org.springframework.security.config: DEBUG
+
+application:
+  domain: ${CLIENT_DOMAIN}
