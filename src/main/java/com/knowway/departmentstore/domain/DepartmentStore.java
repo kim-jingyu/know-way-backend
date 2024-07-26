@@ -4,13 +4,10 @@ import com.knowway.departmentstore.dto.DepartmentStoreRequest;
 import jakarta.persistence.*;
 import lombok.*;
 
-import javax.validation.constraints.NotNull;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import static lombok.AccessLevel.*;
-import static lombok.Builder.*;
 
 @Entity
 @Getter
@@ -30,7 +27,7 @@ public class DepartmentStore {
     @Column(nullable = false)
     private String departmentStoreLongtitude;
 
-    @Default
+    @Builder.Default
     @OneToMany(mappedBy = "departmentStore", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<DepartmentStoreFloor> departmentStoreFloorList = new ArrayList<>();
 
@@ -40,7 +37,6 @@ public class DepartmentStore {
                 .departmentStoreBranch(request.getDepartmentStoreBranch())
                 .departmentStoreLatitude(request.getDepartmentStoreLatitude())
                 .departmentStoreLongtitude(request.getDepartmentStoreLongtitude())
-                .departmentStoreFloorList(new ArrayList<>())
                 .build();
         for (DepartmentStoreFloor departmentStoreFloor : departmentStoreFloorList) {
             departmentStoreFloor.setDepartmentStore(departmentStore);
