@@ -1,5 +1,6 @@
 package com.knowway.departmentstore.domain;
 
+import com.knowway.chat.ChatMessage;
 import com.knowway.departmentstore.dto.DepartmentStoreRequest;
 import jakarta.persistence.*;
 import lombok.*;
@@ -30,6 +31,9 @@ public class DepartmentStore {
     @Builder.Default
     @OneToMany(mappedBy = "departmentStore", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<DepartmentStoreFloor> departmentStoreFloorList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "departmentStore")
+    private List<ChatMessage> chatMessageList;
 
     public static DepartmentStore createDepartmentStore(DepartmentStoreRequest request, List<DepartmentStoreFloor> departmentStoreFloorList) {
         DepartmentStore departmentStore = DepartmentStore.builder()
