@@ -54,7 +54,7 @@ public class SecurityConfig {
       request.requestMatchers(HttpMethod.POST,"/login").permitAll();
       request.requestMatchers(HttpMethod.POST,"/users").permitAll();
       request.requestMatchers(HttpMethod.POST,"/users/emails").permitAll();
-      request.anyRequest().authenticated();
+      request.anyRequest().permitAll();
         });
 
 
