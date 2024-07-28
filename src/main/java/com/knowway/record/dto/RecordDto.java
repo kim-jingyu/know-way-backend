@@ -14,5 +14,4 @@ public class RecordDto {
     private String recordTitle;
     private String recordLatitude;
     private String recordLongitude;
-    private String recordPath;
 }

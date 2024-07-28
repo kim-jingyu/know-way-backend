@@ -3,6 +3,7 @@ package com.knowway.record.service;
 import com.knowway.image.exception.S3Exception;
 import com.knowway.image.service.S3UploadService;
 import com.knowway.record.dto.RecordDto;
+import com.knowway.record.entity.Record;
 import com.knowway.record.repository.RecordRepository;
 import com.knowway.user.entity.Member;
 import com.knowway.user.repository.MemberRepository;
@@ -41,6 +42,7 @@ public class RecordService {
                 .recordLatitude(recordDto.getRecordLatitude())
                 .recordLongitude(recordDto.getRecordLongitude())
                 .recordPath(recordUrl)
+                .recordIsSelected(false)
                 .build();
 
         return recordRepository.save(record).getId();
