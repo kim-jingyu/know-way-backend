@@ -12,10 +12,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @AllArgsConstructor
@@ -54,5 +51,9 @@ public class Record extends BaseEntity {
     @JoinColumn(name = "member_id")
     @ManyToOne
     private Member member;
+
+    public void updateRecordIsSelected(Boolean recordIsSelected) {
+        this.recordIsSelected = recordIsSelected;
+    }
 
 }
