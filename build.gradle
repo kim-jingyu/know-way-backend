@@ -38,7 +38,6 @@ dependencies {
 
     //lombok
     compileOnly 'org.projectlombok:lombok'
-    compileOnly 'javax.servlet:servlet-api:2.3'
     annotationProcessor 'org.projectlombok:lombok'
 
     //oracle-jdbc
