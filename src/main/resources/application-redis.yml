@@ -1,0 +1,7 @@
+spring:
+  data:
+    redis:
+      password: ${REDIS_PASSWORD}
+      timeout: 60000
+      port: ${REDIS_PORT}
+      host: ${REDIS_HOST}

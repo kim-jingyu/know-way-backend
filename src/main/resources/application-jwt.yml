@@ -1,4 +1,8 @@
 encrypt:
   key:
-    access: ${ACCESS_KEY}
-    life-time: ${ACCESS_KEY_LIFE_TIME}
+    access:
+      key: ${ACCESS_KEY}
+      life-time: ${ACCESS_KEY_LIFE_TIME}
+    refresh:
+      key: ${REFRESH_KEY}
+      life-time: ${REFRESH_KEY_LIFE_TIME}
