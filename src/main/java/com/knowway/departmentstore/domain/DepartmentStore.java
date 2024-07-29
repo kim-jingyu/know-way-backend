@@ -1,6 +1,6 @@
 package com.knowway.departmentstore.domain;
 
-import com.knowway.chat.ChatMessage;
+import com.knowway.chat.entity.ChatMessage;
 import com.knowway.departmentstore.dto.DepartmentStoreRequest;
 import jakarta.persistence.*;
 import lombok.*;
