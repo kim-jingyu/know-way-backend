@@ -1,23 +1,20 @@
-package com.knowway.chat;
+package com.knowway.chat.entity;
 
 import com.knowway.common.entity.BaseEntity;
 import com.knowway.departmentstore.domain.DepartmentStore;
 import com.knowway.user.entity.Member;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.Date;
 
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
 @Entity
 @Table(name = "chat_message")
 public class ChatMessage extends BaseEntity {
@@ -29,9 +26,9 @@ public class ChatMessage extends BaseEntity {
 
     @JoinColumn(name = "member_id")
     @ManyToOne
-    private Member memberId;
+    private Member member;
 
-    @JoinColumn(name = "chat_message_id")
+    @JoinColumn(name = "department_store_id")
     @ManyToOne
     private DepartmentStore departmentStore;
 
@@ -40,4 +37,16 @@ public class ChatMessage extends BaseEntity {
 
     @Column(name = "message_nickname", nullable = false, length = 255)
     private String messageNickname;
+
+    @Column(name = "created_at", nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date createdAt;
+
+    public void updateDepartmentStore(DepartmentStore departmentStore) {
+        this.departmentStore = departmentStore;
+    }
+
+    public void updateCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
   }
