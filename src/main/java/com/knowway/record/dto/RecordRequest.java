@@ -5,9 +5,8 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-@Setter
 @Builder
-public class RecordDto {
+public class RecordRequest {
     private Long memberId;
     private Integer departmentStoreFloorId;
     private Long departmentStoreId;
