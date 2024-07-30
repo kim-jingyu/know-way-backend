@@ -1,21 +1,16 @@
-package com.knowway.chat;
+package com.knowway.chat.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.knowway.common.entity.BaseEntity;
 import com.knowway.departmentstore.entity.DepartmentStore;
 import com.knowway.user.entity.Member;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.Date;
 
 @Builder
 @AllArgsConstructor

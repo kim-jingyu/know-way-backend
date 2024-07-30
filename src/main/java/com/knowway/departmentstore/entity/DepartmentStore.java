@@ -1,6 +1,7 @@
 package com.knowway.departmentstore.entity;
 
-import com.knowway.chat.ChatMessage;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.knowway.chat.entity.ChatMessage;
 import com.knowway.common.entity.BaseEntity;
 import com.knowway.departmentstore.dto.DepartmentStoreRequest;
 import jakarta.persistence.*;
@@ -34,6 +35,7 @@ public class DepartmentStore extends BaseEntity {
     private List<DepartmentStoreFloor> departmentStoreFloorList = new ArrayList<>();
 
     @OneToMany(mappedBy = "departmentStore")
+    @JsonIgnore
     private List<ChatMessage> chatMessageList;
 
     public static DepartmentStore createDepartmentStore(DepartmentStoreRequest request, List<DepartmentStoreFloor> departmentStoreFloorList) {
