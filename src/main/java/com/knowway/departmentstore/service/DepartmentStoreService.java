@@ -8,8 +8,8 @@ import com.knowway.departmentstore.dto.DepartmentStoreResponse;
 import com.knowway.departmentstore.exception.DepartmentStoreNotFoundException;
 import com.knowway.departmentstore.repository.DepartmentStoreFloorRepository;
 import com.knowway.departmentstore.repository.DepartmentStoreRepository;
-import com.knowway.image.exception.S3Exception;
-import com.knowway.image.service.S3UploadService;
+import com.knowway.s3.exception.S3Exception;
+import com.knowway.s3.service.S3UploadService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -35,7 +35,7 @@ public class DepartmentStoreService {
                     MultipartFile image = request1.getImage();
                     String imageUrl = null;
                     try {
-                        imageUrl = s3UploadService.saveFile(image);
+                        imageUrl = s3UploadService.saveFile(image, "image");
                     } catch (IOException e) {
                         throw new S3Exception();
                     }
