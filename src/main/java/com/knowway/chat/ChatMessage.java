@@ -1,5 +1,6 @@
 package com.knowway.chat;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.knowway.common.entity.BaseEntity;
 import com.knowway.departmentstore.domain.DepartmentStore;
 import com.knowway.user.entity.Member;
@@ -13,11 +14,13 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
 @Entity
 @Table(name = "chat_message")
 public class ChatMessage extends BaseEntity {
@@ -29,10 +32,11 @@ public class ChatMessage extends BaseEntity {
 
     @JoinColumn(name = "member_id")
     @ManyToOne
-    private Member memberId;
+    private Member member;
 
-    @JoinColumn(name = "chat_message_id")
+    @JoinColumn(name = "department_store_id")
     @ManyToOne
+    @JsonIgnore
     private DepartmentStore departmentStore;
 
     @Column(name = "message_content", nullable = false, length = 255)
@@ -40,4 +44,9 @@ public class ChatMessage extends BaseEntity {
 
     @Column(name = "message_nickname", nullable = false, length = 255)
     private String messageNickname;
-  }
+
+    public void updateDepartmentStore(DepartmentStore departmentStore) {
+        this.departmentStore = departmentStore;
+    }
+
+}
