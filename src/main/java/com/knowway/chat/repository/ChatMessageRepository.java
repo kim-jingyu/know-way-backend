@@ -5,10 +5,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ChatMessageRepository extends JpaRepository<ChatMessage, Long> {
-    List<ChatMessage> findByDepartmentStoreId(Long departmentStoreId);
-    void deleteByTimestampBefore(LocalDateTime timestamp);
+    Optional<ChatMessage> findById(Long departmentStoreId);
+    void deleteByCreatedAtBefore(LocalDateTime created_at);
 }
