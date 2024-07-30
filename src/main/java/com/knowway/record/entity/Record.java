@@ -51,8 +51,4 @@ public class Record extends BaseEntity {
     @ManyToOne
     private Member member;
 
-    public void updateRecordIsSelected(Boolean recordIsSelected) {
-        this.recordIsSelected = recordIsSelected;
-    }
-
 }

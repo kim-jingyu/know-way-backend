@@ -1,6 +1,6 @@
 package com.knowway.admin.controller;
 
-import com.knowway.admin.dto.AdminRecordDto;
+import com.knowway.admin.dto.AdminRecordResponse;
 import com.knowway.admin.service.AdminService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,18 +16,13 @@ public class AdminController {
     private final AdminService adminService;
 
     @GetMapping("/records")
-    public ResponseEntity<List<AdminRecordDto>> getRecordsByFloorId(@RequestParam Integer departmentStoreFloorId) {
+    public ResponseEntity<List<AdminRecordResponse>> getRecordsByFloorId(@RequestParam Integer departmentStoreFloorId) {
         return ResponseEntity.ok(adminService.getRecordsByFloorId(departmentStoreFloorId));
     }
 
     @PatchMapping("/records/{recordId}")
     public ResponseEntity<String> toggleRecordIsSelected(@PathVariable Long recordId) {
-        boolean result = adminService.toggleRecordIsSelected(recordId);
-        if (result) {
-            return ResponseEntity.ok("success to select record");
-        } else {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Failed to select record");
-        }
+        adminService.toggleRecordIsSelected(recordId);
+        return ResponseEntity.ok().body("녹음 선정 관련 처리 완료");
     }
 }

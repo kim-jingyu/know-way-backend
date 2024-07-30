@@ -7,7 +7,7 @@ import lombok.*;
 @Getter
 @Setter
 @Builder
-public class AdminRecordDto {
+public class AdminRecordResponse {
     private Long id;
     private String recordTitle;
     private String recordLatitude;
