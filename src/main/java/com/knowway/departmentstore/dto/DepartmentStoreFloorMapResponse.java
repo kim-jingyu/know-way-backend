@@ -1,6 +1,6 @@
 package com.knowway.departmentstore.dto;
 
-import com.knowway.departmentstore.domain.DepartmentStoreFloor;
+import com.knowway.departmentstore.entity.DepartmentStoreFloor;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

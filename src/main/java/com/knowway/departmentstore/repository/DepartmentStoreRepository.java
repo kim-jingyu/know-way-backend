@@ -1,6 +1,6 @@
 package com.knowway.departmentstore.repository;
 
-import com.knowway.departmentstore.domain.DepartmentStore;
+import com.knowway.departmentstore.entity.DepartmentStore;
 import com.knowway.departmentstore.exception.DepartmentStoreNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
