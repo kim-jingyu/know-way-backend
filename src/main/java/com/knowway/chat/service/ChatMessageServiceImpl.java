@@ -9,6 +9,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -26,8 +27,8 @@ public class ChatMessageServiceImpl implements ChatMessageService {
     }
 
     @Override
-    public Optional<ChatMessage> findMessages(Long storeId) {
-        return chatMessageRepository.findById(storeId);
+    public List<ChatMessage> findMessages(Long storeId) {
+        return chatMessageRepository.findAllById(storeId);
     }
 
     @Override

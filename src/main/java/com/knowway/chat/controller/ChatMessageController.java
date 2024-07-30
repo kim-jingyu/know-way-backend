@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -16,8 +17,8 @@ public class ChatMessageController {
 
     private final ChatMessageService chatMessageService;
 
-    @GetMapping("/{departmentStoreId}/messages")
-    public Optional<ChatMessage> messagesList(@PathVariable Long departmentStoreId) {
+    @GetMapping("/{departmentStoreId}")
+    public List<ChatMessage> messagesList(@PathVariable("departmentStoreId") Long departmentStoreId) {
         return chatMessageService.findMessages(departmentStoreId);
     }
 
