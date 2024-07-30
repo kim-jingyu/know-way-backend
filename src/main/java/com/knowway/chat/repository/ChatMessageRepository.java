@@ -10,6 +10,6 @@ import java.util.Optional;
 
 @Repository
 public interface ChatMessageRepository extends JpaRepository<ChatMessage, Long> {
-    List<ChatMessage> findAllById(Long departmentStoreId);
+    List<ChatMessage> findByDepartmentStore_DepartmentStoreId(Long departmentStoreId);
     void deleteByCreatedAtBefore(LocalDateTime created_at);
 }
