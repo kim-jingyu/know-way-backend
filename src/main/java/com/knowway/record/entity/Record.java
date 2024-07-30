@@ -2,7 +2,6 @@ package com.knowway.record.entity;
 
 
 import com.knowway.common.entity.BaseEntity;
-import com.knowway.record.dto.RecordDto;
 import com.knowway.user.entity.Member;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
