@@ -1,7 +1,7 @@
 package com.knowway.record.service;
 
-import com.knowway.image.exception.S3Exception;
-import com.knowway.image.service.S3UploadService;
+import com.knowway.s3.exception.S3Exception;
+import com.knowway.s3.service.S3UploadService;
 import com.knowway.record.dto.RecordRequest;
 import com.knowway.record.entity.Record;
 import com.knowway.record.repository.RecordRepository;
@@ -27,7 +27,7 @@ public class RecordServiceImpl implements RecordService {
     public Long addRecord(RecordRequest recordRequest, MultipartFile recordFile) {
         String recordUrl = null;
         try {
-            recordUrl = s3UploadService.saveFile(recordFile);
+            recordUrl = s3UploadService.saveFile(recordFile, "record");
         } catch (IOException e) {
             throw new S3Exception();
         }
