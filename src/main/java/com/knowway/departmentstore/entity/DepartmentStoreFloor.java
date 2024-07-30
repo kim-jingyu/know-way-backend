@@ -1,9 +1,7 @@
-package com.knowway.departmentstore.domain;
+package com.knowway.departmentstore.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-
-import javax.validation.constraints.NotNull;
 
 import static jakarta.persistence.FetchType.*;
 import static jakarta.persistence.GenerationType.*;
@@ -23,8 +21,9 @@ public class DepartmentStoreFloor {
     @Column(nullable = false)
     private String departmentStoreFloor;
 
-    @ManyToOne(fetch = LAZY)
     @Setter
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "department_store_id")
     private DepartmentStore departmentStore;
 
     public static DepartmentStoreFloor createDepartmentStoreFloor(String departmentStoreFloor, String departmentStoreFloorMapPath) {

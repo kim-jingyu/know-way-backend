@@ -2,7 +2,7 @@ package com.knowway.chat;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.knowway.common.entity.BaseEntity;
-import com.knowway.departmentstore.domain.DepartmentStore;
+import com.knowway.departmentstore.entity.DepartmentStore;
 import com.knowway.user.entity.Member;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

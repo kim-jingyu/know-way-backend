@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.knowway.departmentstore.dto.DepartmentStoreFloorMapResponse;
 import com.knowway.departmentstore.dto.DepartmentStoreRequest;
 import com.knowway.departmentstore.dto.DepartmentStoreResponse;
-import com.knowway.departmentstore.service.DepartmentStoreService;
+import com.knowway.departmentstore.service.DepartmentStoreServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -19,10 +19,10 @@ import java.util.List;
 @RequestMapping(value = "/depts")
 @RequiredArgsConstructor
 public class DepartmentStoreController {
-    private final DepartmentStoreService service;
+    private final DepartmentStoreServiceImpl service;
     private final ObjectMapper objectMapper;
 
-    @PostMapping(value = "/make", consumes = {"multipart/form-data"})
+    @PostMapping(value = "/make", consumes = "multipart/form-data")
     public ResponseEntity<Long> makeDepartmentStore(@RequestPart("departmentStoreRequest") String departmentStoreRequest,
                                                     @RequestPart("images") List<MultipartFile> images) throws JsonProcessingException {
         DepartmentStoreRequest request = objectMapper.readValue(departmentStoreRequest, DepartmentStoreRequest.class);
@@ -39,12 +39,6 @@ public class DepartmentStoreController {
                 .body(service.makeDepartmentStore(request));
     }
 
-    @GetMapping(value = "/all")
-    public ResponseEntity<List<DepartmentStoreResponse>> getAll() {
-        return ResponseEntity.ok()
-                .body(service.getAll());
-    }
-
     @GetMapping
     public ResponseEntity<Page<DepartmentStoreResponse>> getAllDepartmentStores(@RequestParam(value = "size", defaultValue = "5") Integer size, @RequestParam(value = "page", defaultValue = "1") Integer page) {
         return ResponseEntity.ok()
@@ -53,21 +47,23 @@ public class DepartmentStoreController {
 
     @GetMapping(value = "/loc")
     public ResponseEntity<Page<DepartmentStoreResponse>> getDepartmentStoresByLocation(@RequestParam(value = "size", defaultValue = "5") Integer size,
-                                                                                       @RequestParam(value = "size", defaultValue = "1") Integer page,
+                                                                                       @RequestParam(value = "page", defaultValue = "0") Integer page,
                                                                                        @RequestParam(value = "latitude") String latitude,
                                                                                        @RequestParam(value = "longtitude") String longtitude) {
         return ResponseEntity.ok()
                 .body(service.getDepartmentStoreListByLocation(size, page, latitude, longtitude));
     }
 
-    @GetMapping(value = "/floors/{departmentStoreFloorId}")
-    public ResponseEntity<DepartmentStoreFloorMapResponse> getDepartmentStoreFloorMap(@PathVariable(value = "departmentStoreFloorId") Long departmentStoreFloorId) {
+    @GetMapping(value = "/{deptId}/floors")
+    public ResponseEntity<DepartmentStoreFloorMapResponse> getDepartmentStoreFloorMap(
+            @PathVariable(value = "deptId") Long deptId,
+            @RequestParam(value = "floor") String floor) {
         return ResponseEntity.ok()
-                .body(service.getDepartmentStoreFloorMap(departmentStoreFloorId));
+                .body(service.getDepartmentStoreFloorMap(deptId, floor));
     }
 
-    @GetMapping(value = "/{departmentStoreId}")
-    public ResponseEntity<List<Long>> getDepartmentStoreFloorList(@PathVariable(value = "departmentStoreId") Long departmentStoreId) {
+    @GetMapping(value = "/{deptId}")
+    public ResponseEntity<List<DepartmentStoreFloorMapResponse>> getDepartmentStoreFloorList(@PathVariable(value = "deptId") Long departmentStoreId) {
         return ResponseEntity.ok()
                 .body(service.getDepartmentStoreFloorList(departmentStoreId));
     }
@@ -76,5 +72,11 @@ public class DepartmentStoreController {
     public ResponseEntity<DepartmentStoreResponse> getDepartmentStoreByBranch(@RequestParam(value = "departmentStoreBranch") String departmentStoreBranch) {
         return ResponseEntity.ok()
                 .body(service.getDepartmentStoreByBranch(departmentStoreBranch));
+    }
+
+    @DeleteMapping(value = "/{deptId}")
+    public ResponseEntity<Void> removeDepartmentStore(@PathVariable(value = "deptId") Long departmentStoreId) {
+        service.removeDepartmentStore(departmentStoreId);
+        return ResponseEntity.ok().build();
     }
 }
