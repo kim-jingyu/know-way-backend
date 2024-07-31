@@ -21,6 +21,7 @@ public class ChatMessageController {
 
     @GetMapping("/{departmentStoreId}")
     public ResponseEntity<List<ChatMessageResponse>> messagesList(@PathVariable("departmentStoreId") Long departmentStoreId) {
+        System.out.println(chatMessageService.findMessages(departmentStoreId));
         return ResponseEntity.ok(chatMessageService.findMessages(departmentStoreId));
     }
 
