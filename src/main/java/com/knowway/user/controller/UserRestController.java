@@ -1,13 +1,12 @@
 package com.knowway.user.controller;
 
 
-import com.knowway.user.dto.EmailDto;
-import com.knowway.user.dto.UserSignUpDto;
+import com.knowway.user.dto.EmailDuplicationCheckRequset;
+import com.knowway.user.dto.UserSignUpRequest;
 import com.knowway.user.service.UserDuplicationChecker;
 import com.knowway.user.service.UserService;
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,14 +24,14 @@ public class UserRestController {
 
   @PostMapping("/emails")
   public ResponseEntity<String> emailDuplicationCheck(
-      @RequestBody @Valid EmailDto emailDto) {
-    duplicationChecker.emailDuplicationChecker(emailDto.getEmail());
+      @RequestBody @Valid EmailDuplicationCheckRequset emailDuplicationCheckRequset) {
+    duplicationChecker.emailDuplicationChecker(emailDuplicationCheckRequset.getEmail());
     return ResponseEntity.ok().body("중복되지 않은 이메일입니다.");
   }
 
   @PostMapping
   public ResponseEntity<String> signUp(
-      @RequestBody @Valid UserSignUpDto signUpDto) {
+      @RequestBody @Valid UserSignUpRequest signUpDto) {
     userService.signUp(signUpDto);
     return ResponseEntity.ok().body("회원가입 완료");
 

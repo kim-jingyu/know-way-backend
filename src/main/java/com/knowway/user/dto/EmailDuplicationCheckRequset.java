@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 @Builder
-public class EmailDto {
+public class EmailDuplicationCheckRequset {
 
   private String email;
 

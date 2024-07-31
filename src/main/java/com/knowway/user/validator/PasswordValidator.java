@@ -1,8 +1,8 @@
 package com.knowway.user.validator;
 
 import com.knowway.user.annotation.Password;
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 
 /**
  * This is the ConstraintValidator which is bound with Password annotation
