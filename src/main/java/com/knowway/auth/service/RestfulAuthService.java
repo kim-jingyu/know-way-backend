@@ -7,8 +7,10 @@ import com.knowway.auth.vo.AuthRequestHeaderPrefix;
 import com.knowway.auth.vo.ClaimsKey;
 import com.knowway.auth.vo.RequestHeaderNaming;
 import com.knowway.user.repository.MemberRepository;
+import com.knowway.user.vo.Role;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.HashMap;
 import java.util.Map;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -35,7 +37,7 @@ public abstract class RestfulAuthService<K, USERID extends Long> implements Auth
     try {
       USERID userId = (USERID) request.getAttribute(
           RequestHeaderNaming.REQUEST_HEADER_USER_ID);
-      String role = getRole();
+      Role role = getRole();
       String accessSubject = userIdToSubjectConvertor.convert(userId);
       K key = tokenToKeyConvertor.convert(accessSubject);
 
@@ -57,10 +59,10 @@ public abstract class RestfulAuthService<K, USERID extends Long> implements Auth
     accessTokenHandler.invalidateToken(token);
   }
 
-  protected String getRole() {
-    return SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
+  protected Role getRole() {
+    return Role.valueOf(SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
         .findFirst()
-        .orElseThrow(() -> new AuthException("Role이 존재하지 않습니다.")).getAuthority();
+        .orElseThrow(() -> new AuthException("Role이 존재하지 않습니다.")).getAuthority());
   }
 
 }

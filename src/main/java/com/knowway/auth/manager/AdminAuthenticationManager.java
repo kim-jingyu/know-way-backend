@@ -1,12 +1,14 @@
 package com.knowway.auth.manager;
 
 import com.knowway.auth.exception.AuthException;
+import com.knowway.user.vo.Role;
 import java.util.Collections;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -26,12 +28,16 @@ public class AdminAuthenticationManager<ADMINID extends Long> implements Authent
     return new UsernamePasswordAuthenticationToken(ADMINID.valueOf(adminUserDetail.getUsername()),
         encoder.encode(
             adminUserDetail.getPassword()),
-        Collections.singleton(new SimpleGrantedAuthority(getRole(adminUserDetail))));
+        Collections.singleton(new SimpleGrantedAuthority(getRole(adminUserDetail).name())));
 
   }
 
-  private String getRole(UserDetails adminUserDetail) {
-    return adminUserDetail.getAuthorities().stream().findFirst()
-        .orElseThrow(() -> new AuthException("Admin의 Role이 존재하지 않습니다.")).getAuthority();
+  private Role getRole(UserDetails adminUserDetail) {
+    return adminUserDetail.getAuthorities().stream()
+        .map(GrantedAuthority::getAuthority)
+        .filter(authority -> authority.contains("ADMIN"))
+        .findFirst()
+        .map(authority -> Role.ADMIN)
+        .orElseThrow(() -> new AuthException("ADMIN의 role이 아닙니다."));
   }
 }
