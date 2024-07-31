@@ -13,3 +13,7 @@ spring:
     driver-class-name: ${DATASOURCE_DRIVER}
 
 
+jakarta:
+  persistence:
+    jdbc:
+      url: ${DATASOURCE_URL}

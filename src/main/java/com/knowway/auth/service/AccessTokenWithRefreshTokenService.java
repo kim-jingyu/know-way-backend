@@ -68,7 +68,7 @@ public class AccessTokenWithRefreshTokenService<K, V, USERID extends Long> exten
   public String reAuthentication(K oldKey, V value) {
 
     USERID userId = valueToUserIdConvertor.convert(value);
-    String role = getRole();
+    Role role = getRole();
 
     String accessToken = valueAccessTokenHandler.createToken(value,
         Map.of(ClaimsKey.ROLE_CLAIMS_KEY, role));
