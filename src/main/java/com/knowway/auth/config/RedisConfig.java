@@ -19,8 +19,8 @@ public class RedisConfig {
   private String password;
   @Value("${spring.data.redis.host}")
   private String host;
-  @Value("${spring.data.redis.refresh.port}")
-  private int refreshPort;
+  @Value("${spring.data.redis.port}")
+  private int redisPort;
 
 
   @Qualifier("redisTemplate")
@@ -50,7 +50,7 @@ public class RedisConfig {
   public RedisConnectionFactory refreshRedisFactory() {
     RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
     redisStandaloneConfiguration.setHostName(host);
-    redisStandaloneConfiguration.setPort(refreshPort);
+    redisStandaloneConfiguration.setPort(redisPort);
     redisStandaloneConfiguration.setPassword(password);
     redisStandaloneConfiguration.setDatabase(15);
     return new LettuceConnectionFactory(redisStandaloneConfiguration);
@@ -61,7 +61,7 @@ public class RedisConfig {
   public RedisConnectionFactory blackListRedisFactory() {
     RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
     redisStandaloneConfiguration.setHostName(host);
-    redisStandaloneConfiguration.setPort(refreshPort);
+    redisStandaloneConfiguration.setPort(redisPort);
     redisStandaloneConfiguration.setPassword(password);
     redisStandaloneConfiguration.setDatabase(14);
     return new LettuceConnectionFactory(redisStandaloneConfiguration);

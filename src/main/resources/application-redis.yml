@@ -3,7 +3,4 @@ spring:
     redis:
       password: ${REDIS_PASSWORD}
       host: ${REDIS_HOST}
-      blacklist:
-        port: ${REDIS_BLACKLIST_PORT}
-      refresh:
-        port: ${REDIS_REFERSH_PORT}
+      port: ${REDIS_PORT}

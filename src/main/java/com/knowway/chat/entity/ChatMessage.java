@@ -1,23 +1,21 @@
-package com.knowway.chat;
+package com.knowway.chat.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.knowway.common.entity.BaseEntity;
-import com.knowway.departmentstore.domain.DepartmentStore;
+import com.knowway.departmentstore.entity.DepartmentStore;
 import com.knowway.user.entity.Member;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.Date;
 
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
 @Entity
 @Table(name = "chat_message")
 public class ChatMessage extends BaseEntity {
@@ -31,8 +29,9 @@ public class ChatMessage extends BaseEntity {
     @ManyToOne
     private Member member;
 
-    @JoinColumn(name = "chat_message_id")
+    @JoinColumn(name = "department_store_id")
     @ManyToOne
+    @JsonIgnore
     private DepartmentStore departmentStore;
 
     @Column(name = "message_content", nullable = false, length = 255)
@@ -40,4 +39,9 @@ public class ChatMessage extends BaseEntity {
 
     @Column(name = "message_nickname", nullable = false, length = 255)
     private String messageNickname;
-  }
+
+    public void updateDepartmentStore(DepartmentStore departmentStore) {
+        this.departmentStore = departmentStore;
+    }
+
+}

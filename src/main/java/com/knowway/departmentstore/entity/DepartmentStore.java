@@ -1,6 +1,8 @@
-package com.knowway.departmentstore.domain;
+package com.knowway.departmentstore.entity;
 
-import com.knowway.chat.ChatMessage;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.knowway.chat.entity.ChatMessage;
+import com.knowway.common.entity.BaseEntity;
 import com.knowway.departmentstore.dto.DepartmentStoreRequest;
 import jakarta.persistence.*;
 import lombok.*;
@@ -15,7 +17,7 @@ import static lombok.AccessLevel.*;
 @NoArgsConstructor(access = PROTECTED)
 @AllArgsConstructor
 @Builder
-public class DepartmentStore {
+public class DepartmentStore extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long departmentStoreId;
@@ -29,10 +31,11 @@ public class DepartmentStore {
     private String departmentStoreLongtitude;
 
     @Builder.Default
-    @OneToMany(mappedBy = "departmentStore", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "departmentStore", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DepartmentStoreFloor> departmentStoreFloorList = new ArrayList<>();
 
     @OneToMany(mappedBy = "departmentStore")
+    @JsonIgnore
     private List<ChatMessage> chatMessageList;
 
     public static DepartmentStore createDepartmentStore(DepartmentStoreRequest request, List<DepartmentStoreFloor> departmentStoreFloorList) {
