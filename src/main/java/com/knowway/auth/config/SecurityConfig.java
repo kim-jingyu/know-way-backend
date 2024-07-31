@@ -69,29 +69,6 @@ public class SecurityConfig {
     this.memberRepository = memberRepository;
   }
 
-  @Qualifier("redisTemplate")
-  @Bean
-  public RedisTemplate<String, String> redisTemplate(
-      @Qualifier("blackListRedisFactory") RedisConnectionFactory blackListRedisFactory) {
-    RedisTemplate<String, String> template = new RedisTemplate<>();
-    template.setConnectionFactory(blackListRedisFactory);
-    template.setKeySerializer(new StringRedisSerializer());
-    template.setValueSerializer(new StringRedisSerializer());
-    return template;
-  }
-
-  @Qualifier("refreshRedisTemplate")
-  @Bean
-  public RedisTemplate<String, String> refreshRedisTemplate(
-      @Qualifier("refreshRedisFactory") RedisConnectionFactory blackListRedisFactory) {
-    RedisTemplate<String, String> template = new RedisTemplate<>();
-    template.setConnectionFactory(blackListRedisFactory);
-    template.setKeySerializer(new StringRedisSerializer());
-    template.setValueSerializer(new StringRedisSerializer());
-    return template;
-  }
-
-
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http,
       AuthenticationSuccessHandler systemAuthenticationSuccessHandler) throws Exception {
