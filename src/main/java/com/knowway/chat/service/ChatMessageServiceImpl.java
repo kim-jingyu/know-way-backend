@@ -9,6 +9,7 @@ import com.knowway.departmentstore.repository.DepartmentStoreRepository;
 import com.knowway.user.entity.Member;
 import com.knowway.user.exception.UserException;
 import com.knowway.user.repository.MemberRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,7 @@ public class ChatMessageServiceImpl implements ChatMessageService {
     private final DepartmentStoreRepository departmentStoreRepository;
     private final MemberRepository memberRepository;
 
+    @Transactional
     @Override
     public ChatMessage postMessage(ChatMessageRequest chatMessageRequest) {
         DepartmentStore departmentStore = departmentStoreRepository.getById(chatMessageRequest.getDepartmentStoreId());
