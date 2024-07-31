@@ -13,7 +13,7 @@ public interface UserMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "password", source = "passwordEncoder")
-    @Mapping(target = "role", constant= "ROLE_USER")
+    @Mapping(target = "role", constant= "USER")
     Member toMember(UserSignUpRequest dto,  String passwordEncoder);
 
 

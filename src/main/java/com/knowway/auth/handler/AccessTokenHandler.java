@@ -2,6 +2,7 @@ package com.knowway.auth.handler;
 
 import com.knowway.auth.service.JwtAccessTokenProcessor;
 import com.knowway.auth.util.TypeConvertor;
+import com.knowway.user.vo.Role;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 
@@ -29,5 +30,9 @@ public class AccessTokenHandler<K> {
 
   public String getSubject(String accessToken) {
     return jwtAccessTokenProcessor.getSubject(accessToken);
+  }
+
+  public Role getRole(String accessToken) {
+    return jwtAccessTokenProcessor.getRole(accessToken);
   }
 }
