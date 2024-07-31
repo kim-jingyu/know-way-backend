@@ -2,14 +2,14 @@ package com.knowway.user.controller;
 
 
 import com.knowway.user.dto.EmailDuplicationCheckRequset;
+import com.knowway.user.dto.UserProfileResponse;
 import com.knowway.user.dto.UserRecordResponse;
 import com.knowway.user.dto.UserSignUpRequest;
 import com.knowway.user.service.UserDuplicationChecker;
-import com.knowway.user.dto.UserProfileResponse;
 import com.knowway.user.service.UserService;
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -51,11 +51,13 @@ public class UserController<USERID extends Long> {
 
   }
 
-  @GetMapping("/user/records")
-  public Page<UserRecordResponse> getUserRecordHistory(@AuthenticationPrincipal USERID userId,
-      @RequestParam int page,
-      @RequestParam int size) {
-    return userService.getUserRecordHistory(userId, page, size);
+  @GetMapping("/records")
+  public ResponseEntity<List<UserRecordResponse>> getUserRecordHistory(
+      @AuthenticationPrincipal USERID userId,
+      @RequestParam(defaultValue = "0") int page,
+      @RequestParam(defaultValue = "10") int size) {
+    return ResponseEntity.ok()
+        .body(userService.getUserRecordHistory(userId, page, size).getContent());
   }
 
 

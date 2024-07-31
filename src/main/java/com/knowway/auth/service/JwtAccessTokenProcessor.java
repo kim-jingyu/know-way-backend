@@ -36,12 +36,12 @@ public class JwtAccessTokenProcessor {
   }
 
   public Role getRole(String token) {
-    if (validateAccessToken(token)) {
+    if (!isValidToken(token)) {
       throw new AuthException("토큰의 정보가 일치하지 않습니다.");
     }
     try{
     Claims claims = JwtUtil.extractTokenClaims(token, accessKey);
-    return (Role) claims.get(ClaimsKey.ROLE_CLAIMS_KEY);
+    return Role.valueOf((String)claims.get(ClaimsKey.ROLE_CLAIMS_KEY));
     }
     catch(NullPointerException nullPointerException){
       throw new AuthException("Role이 토큰에 존재하지 않습니다.");
@@ -53,7 +53,7 @@ public class JwtAccessTokenProcessor {
   }
 
   public String getSubject(String token) {
-    if (validateAccessToken(token)) {
+    if (!validateAccessToken(token)) {
       throw new AuthException("토큰의 정보가 일치하지 않습니다.");
     }
     return JwtUtil.extractTokenSubject(token, accessKey);

@@ -11,5 +11,5 @@ import lombok.NoArgsConstructor;
 @Builder
 public class MemberProfileDto {
   private String email;
-  private Long pointSum;
+  private Long pointTotal;
 }
