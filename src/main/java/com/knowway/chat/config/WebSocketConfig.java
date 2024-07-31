@@ -1,7 +1,7 @@
 package com.knowway.chat.config;
 
-import com.knowway.chat.ChatWebSocketHandler;
-import com.knowway.chat.CustomHandshakeInterceptor;
+import com.knowway.chat.handler.ChatWebSocketHandler;
+import com.knowway.chat.interceptor.CustomHandshakeInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
