@@ -2,6 +2,7 @@ package com.knowway.record.entity;
 
 
 import com.knowway.common.entity.BaseEntity;
+import com.knowway.departmentstore.entity.DepartmentStoreFloor;
 import com.knowway.user.entity.Member;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -26,11 +27,9 @@ public class Record extends BaseEntity {
     @Column(name = "record_id")
     private Long id;
 
-    @Column(name = "department_store_floor_id")
-    private Integer departmentStoreFloorId;
-
-    @Column(name = "department_store_id")
-    private Long departmentStoreId;
+    @JoinColumn(name = "department_store_floor_id")
+    @ManyToOne
+    private DepartmentStoreFloor departmentStoreFloor;
 
     @Column(name = "record_title", nullable = false)
     private String recordTitle;

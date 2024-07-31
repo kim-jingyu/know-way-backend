@@ -29,7 +29,6 @@ public class AccessTokenSetAsBlackListWhenInvalidating<K, V> implements
     @Override
     public boolean isRegistered(K key) {
         V value = blackListRedisTemplate.opsForValue().get(key);
-        System.out.println(value);
         return value != null;
 
     }
