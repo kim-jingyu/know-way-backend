@@ -6,7 +6,12 @@ import com.knowway.user.dto.UserSignUpRequest;
 import org.springframework.data.domain.Page;
 
 public interface UserService {
+
   void signUp(UserSignUpRequest signUpDto);
+
+  void deleteRecord(Long userId, Long recordId);
+
   Page<UserRecordResponse> getUserRecordHistory(Long userid, int page, int size);
+
   UserProfileResponse getUserProfileInfo(Long userid);
 }

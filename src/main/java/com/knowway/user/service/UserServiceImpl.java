@@ -1,11 +1,13 @@
 package com.knowway.user.service;
 
+import com.knowway.record.entity.Record;
 import com.knowway.record.repository.RecordRepository;
 import com.knowway.user.dto.MemberProfileDto;
 import com.knowway.user.dto.UserProfileResponse;
 import com.knowway.user.dto.UserRecordDto;
 import com.knowway.user.dto.UserRecordResponse;
 import com.knowway.user.dto.UserSignUpRequest;
+import com.knowway.user.exception.UserException;
 import com.knowway.user.mapper.UserMapper;
 import com.knowway.user.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -32,15 +34,22 @@ public class UserServiceImpl implements UserService {
   }
     @Override
     public Page<UserRecordResponse> getUserRecordHistory(Long userId, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        Page<UserRecordDto> dtoPage = recordRepository.findUserRecordsByMemberId(userId, pageable);
-        return dtoPage.map(UserMapper.INSTANCE::userRecordDtoToResponse);
+      Pageable pageable = PageRequest.of(page, size);
+      Page<UserRecordDto> dtoPage = recordRepository.findUserRecordsByMemberId(userId, pageable);
+      return dtoPage.map(UserMapper.INSTANCE::userRecordDtoToResponse);
     }
 
   @Override
   public UserProfileResponse getUserProfileInfo(Long userid) {
     MemberProfileDto dto = memberRepository.findMemberEmailAndPointSum(userid);
     return UserMapper.INSTANCE.profileDtoToProfileResponse(dto);
+  }
+
+  @Override
+  public void deleteRecord(Long userId, Long recordId) {
+    Record record = recordRepository.findByMemberIdAndId(userId, recordId)
+        .orElseThrow(() -> new UserException("해당 유저에 속한 레코드가 아닙니다."));
+    recordRepository.delete(record);
   }
 
 }
