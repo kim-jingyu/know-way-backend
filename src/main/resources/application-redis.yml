@@ -2,6 +2,8 @@ spring:
   data:
     redis:
       password: ${REDIS_PASSWORD}
-      timeout: 60000
-      port: ${REDIS_PORT}
       host: ${REDIS_HOST}
+      blacklist:
+        port: ${REDIS_BLACKLIST_PORT}
+      refresh:
+        port: ${REDIS_REFERSH_PORT}

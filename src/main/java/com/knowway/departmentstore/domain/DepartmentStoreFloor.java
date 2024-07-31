@@ -3,8 +3,6 @@ package com.knowway.departmentstore.domain;
 import jakarta.persistence.*;
 import lombok.*;
 
-import javax.validation.constraints.NotNull;
-
 import static jakarta.persistence.FetchType.*;
 import static jakarta.persistence.GenerationType.*;
 import static lombok.AccessLevel.*;

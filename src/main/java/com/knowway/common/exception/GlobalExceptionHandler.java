@@ -1,13 +1,13 @@
 package com.knowway.common.exception;
 
 import com.knowway.auth.exception.AuthException;
+import com.knowway.user.exception.UserException;
 import io.jsonwebtoken.JwtException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import jdk.jshell.spi.ExecutionControl.UserException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -47,9 +47,9 @@ public class GlobalExceptionHandler {
     return new ResponseEntity<>(getErrorsMap(errors), new HttpHeaders(), HttpStatus.UNAUTHORIZED);
   }
 
-  @ExceptionHandler(UserException.class)
+  @ExceptionHandler(com.knowway.user.exception.UserException.class)
   public ResponseEntity<Map<String, List<String>>> userException(
-      UserException ex) {
+      com.knowway.user.exception.UserException ex) {
     List<String> errors = Collections.singletonList(ex.getMessage());
     return new ResponseEntity<>(getErrorsMap(errors), new HttpHeaders(), HttpStatus.BAD_REQUEST);
   }

@@ -1,13 +1,11 @@
 package com.knowway.auth.filter;
 
 
-
 import com.knowway.auth.exception.AuthException;
-import com.knowway.auth.handler.TokenHandler;
-import com.knowway.auth.vo.ExtractHeaderKeyByRequest;
+import com.knowway.auth.handler.AccessTokenHandler;
 import com.knowway.auth.util.JsonBinderUtil;
 import com.knowway.auth.vo.AuthRequestHeaderPrefix;
-import com.knowway.auth.vo.JwtType;
+import com.knowway.auth.vo.ExtractHeaderKeyByRequest;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import jakarta.servlet.FilterChain;
@@ -23,14 +21,18 @@ import org.springframework.web.filter.OncePerRequestFilter;
 /**
  * This is the JwtAuthenticationFilter, which can be used when there is token at header or not
  * For managing the authorization in one place this filter isn't set shouldNotFilter
- * @see com.handsome.mall.config.SecurityConfig
+ * @see com.knowway.auth.config.SecurityConfig
  * When user is authenticated set the user is authenticated
  * @see JwtAuthenticationFilter#setSecurityContext(String)
  */
 @AllArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-  private TokenHandler tokenHandler;
+  /**
+   * The Raw type with AccessTokenHandler is fine, just because the Type is only used
+   * * when persist the token, This filter only validate token, So won't be problem
+   */
+  private final AccessTokenHandler accessTokenHandler;
 
   @Override
   public void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
@@ -42,10 +44,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     try {
       String token = ExtractHeaderKeyByRequest.extractKey(request, AuthRequestHeaderPrefix.AUTHORIZATION_HEADER).substring(7);
 
-      if (!tokenHandler.isValidToken(JwtType.access, token)) {
+      if (!accessTokenHandler.isValidToken(token)) {
         response.setStatus(401);
       } else {
-        setSecurityContext(tokenHandler.getUserId(JwtType.access, token));
+        setSecurityContext(accessTokenHandler.getSubject(token));
         filterChain.doFilter(request, response);
       }
     } catch (ExpiredJwtException expiredJwtException) {

@@ -29,7 +29,7 @@ public class ChatMessage extends BaseEntity {
 
     @JoinColumn(name = "member_id")
     @ManyToOne
-    private Member memberId;
+    private Member member;
 
     @JoinColumn(name = "chat_message_id")
     @ManyToOne

@@ -1,12 +1,10 @@
 package com.knowway.auth.service;
 
-import jakarta.servlet.ServletRequest;
-import jakarta.servlet.ServletResponse;
-import org.springframework.stereotype.Service;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 public interface AuthService {
-  public void login(ServletRequest request, ServletResponse response);
-  public void logout(ServletRequest request, ServletResponse response);
-  public void reAuthentication(ServletRequest request, ServletResponse response);
+  public void login(HttpServletRequest request, HttpServletResponse response);
+  public void logout(HttpServletRequest request, HttpServletResponse response);
 
 }

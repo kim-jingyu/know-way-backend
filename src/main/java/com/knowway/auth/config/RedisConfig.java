@@ -1,26 +1,69 @@
 package com.knowway.auth.config;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
+@RequiredArgsConstructor
 @Configuration
 public class RedisConfig {
 
-   @Bean
-    public RedisConnectionFactory redisConnectionFactory() {
-        return new LettuceConnectionFactory();
-    }
+  @Value("${spring.data.redis.password}")
+  private String password;
+  @Value("${spring.data.redis.host}")
+  private String host;
+  @Value("${spring.data.redis.refresh.port}")
+  private int refreshPort;
 
-    @Bean
-    public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
-        RedisTemplate<String, Object> template = new RedisTemplate<>();
-        template.setConnectionFactory(redisConnectionFactory);
-        template.setKeySerializer(new StringRedisSerializer());
-        template.setValueSerializer(new StringRedisSerializer());
-        return template;
-    }
+
+  @Qualifier("redisTemplate")
+  @Bean
+  public RedisTemplate<String, String> redisTemplate(
+      @Qualifier("blackListRedisFactory") RedisConnectionFactory blackListRedisFactory) {
+    RedisTemplate<String, String> template = new RedisTemplate<>();
+    template.setConnectionFactory(blackListRedisFactory);
+    template.setKeySerializer(new StringRedisSerializer());
+    template.setValueSerializer(new StringRedisSerializer());
+    return template;
+  }
+  @Qualifier("refreshRedisTemplate")
+  @Bean
+  public RedisTemplate<String, String> refreshRedisTemplate(
+      @Qualifier("refreshRedisFactory") RedisConnectionFactory blackListRedisFactory) {
+    RedisTemplate<String, String> template = new RedisTemplate<>();
+    template.setConnectionFactory(blackListRedisFactory);
+    template.setKeySerializer(new StringRedisSerializer());
+    template.setValueSerializer(new StringRedisSerializer());
+    return template;
+  }
+
+
+  @Qualifier("refreshRedisFactory")
+  @Bean
+  public RedisConnectionFactory refreshRedisFactory() {
+    RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
+    redisStandaloneConfiguration.setHostName(host);
+    redisStandaloneConfiguration.setPort(refreshPort);
+    redisStandaloneConfiguration.setPassword(password);
+    redisStandaloneConfiguration.setDatabase(15);
+    return new LettuceConnectionFactory(redisStandaloneConfiguration);
+  }
+
+  @Qualifier("blackListRedisFactory")
+  @Bean
+  public RedisConnectionFactory blackListRedisFactory() {
+    RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
+    redisStandaloneConfiguration.setHostName(host);
+    redisStandaloneConfiguration.setPort(refreshPort);
+    redisStandaloneConfiguration.setPassword(password);
+    redisStandaloneConfiguration.setDatabase(14);
+    return new LettuceConnectionFactory(redisStandaloneConfiguration);
+  }
 }

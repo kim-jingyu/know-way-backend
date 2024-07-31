@@ -3,6 +3,7 @@ package com.knowway.auth.filter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.knowway.auth.dto.UserLoginDto;
 import com.knowway.auth.exception.AuthException;
+import com.knowway.auth.service.RestfulAuthService;
 import com.knowway.user.vo.Role;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

@@ -6,9 +6,13 @@ spring:
       -  application-datasource.yml
       -  application-jwt.yml
       -  application-s3.yml
+      -  application-redis.yml
 
 logging:
   level:
+#    org.springframework: DEBUG
+    org.springframework.data.redis: DEBUG
+    io.lettuce.core: DEBUG
     root: INFO
     org.springframework.security: DEBUG
     org.springframework.security.web: DEBUG
@@ -16,3 +20,4 @@ logging:
 
 application:
   domain: test
+

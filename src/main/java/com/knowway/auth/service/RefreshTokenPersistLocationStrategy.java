@@ -1,8 +1,8 @@
 package com.knowway.auth.service;
 
 
-public interface RefreshTokenPersistLocationStrategy {
-    void persist(String token);
-    boolean isRegistered(String token);
-    void delete(String token);
+public interface RefreshTokenPersistLocationStrategy<K ,V> {
+    void persist(K key,V value,long lifeTime);
+    boolean isRegistered(K key);
+    void delete(K key);
 }

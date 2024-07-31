@@ -1,12 +1,12 @@
 package com.knowway.user.annotation;
 
 import com.knowway.user.validator.PasswordValidator;
+import jakarta.validation.Constraint;
+import jakarta.validation.Payload;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import javax.validation.Constraint;
-import javax.validation.Payload;
 
 /**
  * This annotation is for checking the nickname validation check which is bound the NickNameValidator.class
