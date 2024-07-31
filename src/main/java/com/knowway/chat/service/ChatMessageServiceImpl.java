@@ -46,6 +46,7 @@ public class ChatMessageServiceImpl implements ChatMessageService {
         return messages.stream()
                 .map(message -> new ChatMessageResponse(
                         message.getMember().getId(),
+                        message.getMessageId(),
                         message.getCreatedAt(),
                         message.getMessageNickname(),
                         message.getMessageContent()
