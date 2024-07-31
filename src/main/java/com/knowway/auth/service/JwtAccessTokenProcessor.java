@@ -3,6 +3,9 @@ package com.knowway.auth.service;
 
 import com.knowway.auth.exception.AuthException;
 import com.knowway.auth.util.JwtUtil;
+import com.knowway.auth.vo.ClaimsKey;
+import com.knowway.user.vo.Role;
+import io.jsonwebtoken.Claims;
 import java.util.Map;
 import lombok.AllArgsConstructor;
 
@@ -32,7 +35,27 @@ public class JwtAccessTokenProcessor {
         accessKeyLifeTime, claimsList);
   }
 
+  public Role getRole(String token) {
+    if (validateAccessToken(token)) {
+      throw new AuthException("토큰의 정보가 일치하지 않습니다.");
+    }
+    try{
+    Claims claims = JwtUtil.extractTokenClaims(token, accessKey);
+    return (Role) claims.get(ClaimsKey.ROLE_CLAIMS_KEY);
+    }
+    catch(NullPointerException nullPointerException){
+      throw new AuthException("Role이 토큰에 존재하지 않습니다.");
+    }
+    catch(ClassCastException classCastException){
+      throw new AuthException("Role Type이 일치하지 않습니다.");
+    }
+
+  }
+
   public String getSubject(String token) {
+    if (validateAccessToken(token)) {
+      throw new AuthException("토큰의 정보가 일치하지 않습니다.");
+    }
     return JwtUtil.extractTokenSubject(token, accessKey);
   }
 

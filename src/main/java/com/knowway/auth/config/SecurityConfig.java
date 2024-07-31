@@ -78,9 +78,6 @@ public class SecurityConfig {
     this.memberRepository = memberRepository;
   }
 
-<<<<<<< Updated upstream
-=======
-
   @Bean
   public UserDetailsService inMemoryUserDetailsService() {
     UserDetails admin = User.builder()
