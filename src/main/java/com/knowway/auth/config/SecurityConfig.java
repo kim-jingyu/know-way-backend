@@ -18,6 +18,7 @@ import com.knowway.auth.service.RefreshTokenPersistLocationStrategy;
 import com.knowway.auth.service.RtrRefreshTokenReIssueStrategy;
 import com.knowway.auth.util.TypeConvertor;
 import com.knowway.user.repository.MemberRepository;
+import com.knowway.user.vo.Role;
 import java.util.Collections;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -33,8 +34,12 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -58,6 +63,10 @@ public class SecurityConfig {
   private String accessKey;
   @Value("${encrypt.refresh.life-time}")
   private long refreshKeyLifeTime;
+  @Value("${admin.email}")
+  private String adminEmail;
+  @Value("${admin.password}")
+  private String adminPassword;
 
 
   public SecurityConfig(
@@ -69,6 +78,44 @@ public class SecurityConfig {
     this.memberRepository = memberRepository;
   }
 
+<<<<<<< Updated upstream
+=======
+
+  @Bean
+  public UserDetailsService inMemoryUserDetailsService() {
+    UserDetails admin = User.builder()
+        .username(adminEmail)
+        .password(bCryptPasswordEncoder().encode(adminPassword))
+        .roles(Role.ROLE_ADMIN.name())
+        .build();
+
+    return new InMemoryUserDetailsManager(admin);
+  }
+
+  @Qualifier("redisTemplate")
+  @Bean
+  public RedisTemplate<String, String> redisTemplate(
+      @Qualifier("blackListRedisFactory") RedisConnectionFactory blackListRedisFactory) {
+    RedisTemplate<String, String> template = new RedisTemplate<>();
+    template.setConnectionFactory(blackListRedisFactory);
+    template.setKeySerializer(new StringRedisSerializer());
+    template.setValueSerializer(new StringRedisSerializer());
+    return template;
+  }
+
+  @Qualifier("refreshRedisTemplate")
+  @Bean
+  public RedisTemplate<String, String> refreshRedisTemplate(
+      @Qualifier("refreshRedisFactory") RedisConnectionFactory blackListRedisFactory) {
+    RedisTemplate<String, String> template = new RedisTemplate<>();
+    template.setConnectionFactory(blackListRedisFactory);
+    template.setKeySerializer(new StringRedisSerializer());
+    template.setValueSerializer(new StringRedisSerializer());
+    return template;
+  }
+
+
+>>>>>>> Stashed changes
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http,
       AuthenticationSuccessHandler systemAuthenticationSuccessHandler) throws Exception {
@@ -93,7 +140,8 @@ public class SecurityConfig {
           request.requestMatchers(HttpMethod.POST, "/login").permitAll();
           request.requestMatchers(HttpMethod.POST, "/users").permitAll();
           request.requestMatchers(HttpMethod.POST, "/users/emails").permitAll();
-          request.anyRequest().authenticated();
+          request.requestMatchers("/admin/*").hasRole("ADMIN");
+          request.anyRequest().permitAll();
         })
         .addFilterBefore(userAuthenticationFilter(systemAuthenticationSuccessHandler),
             CorsFilter.class)

@@ -26,11 +26,11 @@ import org.springframework.web.filter.OncePerRequestFilter;
  * @see JwtAuthenticationFilter#setSecurityContext(String)
  */
 @AllArgsConstructor
-public class JwtAuthenticationFilter extends OncePerRequestFilter {
+public class JwtAuthenticationFilter<USERID extends Long> extends OncePerRequestFilter {
 
   /**
-   * The Raw type with AccessTokenHandler is fine, just because the Type is only used
-   * * when persist the token, This filter only validate token, So won't be problem
+   * The Raw type with AccessTokenHandler is fine, just because the Generic Type is only used
+   * when persisting the token, otherwise this filter just validate the token, So won't be problem
    */
   private final AccessTokenHandler accessTokenHandler;
 
@@ -43,7 +43,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     if(header!=null){
     try {
       String token = ExtractHeaderKeyByRequest.extractKey(request, AuthRequestHeaderPrefix.AUTHORIZATION_HEADER).substring(7);
-
+      AccessTokenHandler
       if (!accessTokenHandler.isValidToken(token)) {
         response.setStatus(401);
       } else {
