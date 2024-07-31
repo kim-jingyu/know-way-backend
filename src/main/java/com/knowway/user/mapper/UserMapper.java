@@ -1,7 +1,9 @@
 package com.knowway.user.mapper;
 
+import com.knowway.user.dto.MemberProfileDto;
 import com.knowway.user.dto.UserSignUpRequest;
 import com.knowway.user.entity.Member;
+import com.knowway.user.service.UserProfileResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
@@ -18,6 +20,9 @@ public interface UserMapper {
 
 
     UserSignUpRequest toDto(Member member);
+
+
+    UserProfileResponse profileDtoToProfileResponse(MemberProfileDto memberProfileDto);
 
 
 

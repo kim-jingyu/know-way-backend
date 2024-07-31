@@ -1,5 +1,7 @@
 package com.knowway.user.service;
 
+import com.knowway.user.dto.MemberProfileDto;
+import com.knowway.user.dto.UserRecordResponse;
 import com.knowway.user.dto.UserSignUpRequest;
 import com.knowway.user.mapper.UserMapper;
 import com.knowway.user.repository.MemberRepository;
@@ -21,4 +23,16 @@ public class UserServiceImpl implements UserService {
     memberRepository.save(
         UserMapper.INSTANCE.toMember(signUpDto, encoder.encode(signUpDto.getPassword())));
   }
+
+  @Override
+  public UserRecordResponse getUserRecordHistory(Long userid) {
+
+  }
+
+  @Override
+  public UserProfileResponse getUserProfileInfo(Long userid) {
+    MemberProfileDto dto = memberRepository.findMemberEmailAndPointSum(userid);
+    return UserMapper.INSTANCE.profileDtoToProfileResponse(dto);
+  }
+
 }
