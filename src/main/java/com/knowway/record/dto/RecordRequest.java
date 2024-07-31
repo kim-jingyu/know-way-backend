@@ -8,7 +8,7 @@ import lombok.*;
 @Builder
 public class RecordRequest {
     private Long memberId;
-    private Integer departmentStoreFloorId;
+    private Long departmentStoreFloorId;
     private Long departmentStoreId;
     private String recordTitle;
     private String recordLatitude;

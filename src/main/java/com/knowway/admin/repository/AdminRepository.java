@@ -1,12 +1,13 @@
 package com.knowway.admin.repository;
 
 import com.knowway.record.entity.Record;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
-
 import java.util.List;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 
 @Repository
 public interface AdminRepository extends JpaRepository<Record, Long> {
-    List<Record> findByDepartmentStoreFloorId(Integer departmentStoreFloorId);
+    @Query("SELECT Record FROM Record r WHERE r.departmentStoreFloor.departmentStoreFloorId =: departmentStoreFloorId ")
+    List<Record> findByDepartmentStoreFloor(Long departmentStoreFloorId);
 }

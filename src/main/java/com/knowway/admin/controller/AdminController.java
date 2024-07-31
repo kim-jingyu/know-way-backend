@@ -16,7 +16,7 @@ public class AdminController {
     private final AdminService adminService;
 
     @GetMapping("/records")
-    public ResponseEntity<List<AdminRecordResponse>> getRecordsByFloorId(@RequestParam Integer departmentStoreFloorId) {
+    public ResponseEntity<List<AdminRecordResponse>> getRecordsByFloorId(@RequestParam Long departmentStoreFloorId) {
         return ResponseEntity.ok(adminService.getRecordsByFloorId(departmentStoreFloorId));
     }
 
