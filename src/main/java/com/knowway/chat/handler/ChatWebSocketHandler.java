@@ -19,7 +19,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         String departmentStoreId = getDepartmentStoreId(session);
         sessionsMap.computeIfAbsent(departmentStoreId, k -> new CopyOnWriteArrayList<>()).add(session);
-
+        sendSessionCount(departmentStoreId);
     }
 
     @Override
@@ -38,10 +38,26 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
         String departmentStoreId = getDepartmentStoreId(session);
         sessionsMap.getOrDefault(departmentStoreId, new CopyOnWriteArrayList<>()).remove(session);
+        sendSessionCount(departmentStoreId);
     }
 
     private String getDepartmentStoreId(WebSocketSession session) {
         Map<String, Object> attributes = session.getAttributes();
         return (String) attributes.get("departmentStoreId");
+    }
+
+    private void sendSessionCount(String departmentStoreId) {
+        int sessionCount = sessionsMap.getOrDefault(departmentStoreId, new CopyOnWriteArrayList<>()).size();
+        System.out.println("sessionCount= " + sessionCount);
+        TextMessage sessionCountMessage = new TextMessage("{\"type\":\"sessionCount\",\"count\":" + sessionCount + "}");
+        for (WebSocketSession webSocketSession : sessionsMap.getOrDefault(departmentStoreId, new CopyOnWriteArrayList<>())) {
+            if (webSocketSession.isOpen()) {
+                try {
+                    webSocketSession.sendMessage(sessionCountMessage);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 }

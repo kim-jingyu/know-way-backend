@@ -46,7 +46,7 @@ public class ChatMessageServiceImpl implements ChatMessageService {
 
     @Override
     public List<ChatMessageResponse> findMessages(Long departmentStoreId) {
-        List<ChatMessage> messages = chatMessageRepository.findByDepartmentStore_DepartmentStoreId(departmentStoreId);
+        List<ChatMessage> messages = chatMessageRepository.findByDepartmentStore_DepartmentStoreIdOrderByCreatedAt(departmentStoreId);
         return messages.stream()
                 .map(message -> new ChatMessageResponse(
                         message.getMember().getId(),
