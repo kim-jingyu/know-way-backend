@@ -14,11 +14,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-public class UserAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
+
+public class AdminAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
   private final AuthenticationManager authenticationManager;
 
-  public UserAuthenticationFilter(@Qualifier("userAuthenticationManager") AuthenticationManager authenticationManager) {
+  public AdminAuthenticationFilter(@Qualifier("adminAuthenticationManager") AuthenticationManager authenticationManager) {
     super(authenticationManager);
     this.authenticationManager = authenticationManager;
   }
@@ -38,12 +39,11 @@ public class UserAuthenticationFilter extends UsernamePasswordAuthenticationFilt
     try {
       UserLoginDto dto = getLoginDtoFromRequest(request);
       return authenticationManager.authenticate(
-          new UsernamePasswordAuthenticationToken(dto.getEmail(), dto.getPassword(),null));
+          new UsernamePasswordAuthenticationToken(dto.getEmail(), dto.getPassword(), null));
     } catch (BadCredentialsException | IOException | AuthException e) {
       response.setStatus(401);
       throw new BadCredentialsException("일치하지 않은 이메일과 패스워드입니다.");
     }
   }
-
 
 }

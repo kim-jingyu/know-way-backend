@@ -5,7 +5,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,7 +15,13 @@ public class AuthController {
   private final AuthService authService;
 
   @PostMapping("/login")
-  public ResponseEntity<String> signUp(HttpServletRequest request, HttpServletResponse response) {
+  public ResponseEntity<String> login(HttpServletRequest request, HttpServletResponse response) {
+    authService.login(request, response);
+    return ResponseEntity.ok().body("로그인 완료");
+  }
+
+  @PostMapping("/admin/login")
+  public ResponseEntity<String> adminLogin(HttpServletRequest request, HttpServletResponse response) {
     authService.login(request, response);
     return ResponseEntity.ok().body("로그인 완료");
   }
