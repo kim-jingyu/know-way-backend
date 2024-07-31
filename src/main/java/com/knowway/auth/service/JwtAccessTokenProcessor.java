@@ -19,7 +19,7 @@ public class JwtAccessTokenProcessor {
 
 
   public boolean isValidToken(String token) {
-    return isValidTokenHelper(token);
+    return validateAccessToken(token);
   }
 
   public void invalidateToken(String token) {
@@ -53,13 +53,13 @@ public class JwtAccessTokenProcessor {
   }
 
   public String getSubject(String token) {
-    if (!isValidToken(token)) {
+    if (!validateAccessToken(token)) {
       throw new AuthException("토큰의 정보가 일치하지 않습니다.");
     }
     return JwtUtil.extractTokenSubject(token, accessKey);
   }
 
-  private boolean isValidTokenHelper(String token) throws AuthException {
+  private boolean validateAccessToken(String token) throws AuthException {
 
     return !accessTokenInvalidationStrategy.isRegistered(token) && JwtUtil.isTokenValid(token,
         accessKey);

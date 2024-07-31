@@ -1,16 +1,11 @@
 package com.knowway.user.mapper;
 
-<<<<<<< Updated upstream
-import com.knowway.user.dto.UserSignUpRequest;
-import com.knowway.user.entity.Member;
-=======
 import com.knowway.user.dto.MemberProfileDto;
 import com.knowway.user.dto.UserRecordDto;
 import com.knowway.user.dto.UserRecordResponse;
 import com.knowway.user.dto.UserSignUpRequest;
 import com.knowway.user.entity.Member;
 import com.knowway.user.dto.UserProfileResponse;
->>>>>>> Stashed changes
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
@@ -29,9 +24,6 @@ public interface UserMapper {
     UserSignUpRequest toDto(Member member);
 
 
-<<<<<<< Updated upstream
-
-=======
     UserProfileResponse profileDtoToProfileResponse(MemberProfileDto memberProfileDto);
 
 
@@ -42,5 +34,4 @@ public interface UserMapper {
     @Mapping(source = "departmentLocationName", target = "departmentLocationName")
     @Mapping(source = "floor", target = "floor")
     UserRecordResponse userRecordDtoToResponse(UserRecordDto userRecordDto);
->>>>>>> Stashed changes
 }

@@ -1,13 +1,10 @@
 package com.knowway.user.service;
 
-<<<<<<< Updated upstream
-=======
 import com.knowway.record.repository.RecordRepository;
 import com.knowway.user.dto.MemberProfileDto;
 import com.knowway.user.dto.UserProfileResponse;
 import com.knowway.user.dto.UserRecordDto;
 import com.knowway.user.dto.UserRecordResponse;
->>>>>>> Stashed changes
 import com.knowway.user.dto.UserSignUpRequest;
 import com.knowway.user.mapper.UserMapper;
 import com.knowway.user.repository.MemberRepository;
@@ -33,8 +30,6 @@ public class UserServiceImpl implements UserService {
     memberRepository.save(
         UserMapper.INSTANCE.toMember(signUpDto, encoder.encode(signUpDto.getPassword())));
   }
-<<<<<<< Updated upstream
-=======
     @Override
     public Page<UserRecordResponse> getUserRecordHistory(Long userId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
@@ -48,5 +43,4 @@ public class UserServiceImpl implements UserService {
     return UserMapper.INSTANCE.profileDtoToProfileResponse(dto);
   }
 
->>>>>>> Stashed changes
 }
