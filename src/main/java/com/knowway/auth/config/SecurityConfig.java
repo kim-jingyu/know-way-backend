@@ -1,11 +1,13 @@
 package com.knowway.auth.config;
 
+import com.knowway.auth.filter.AdminAuthenticationFilter;
 import com.knowway.auth.filter.JwtAuthenticationFilter;
 import com.knowway.auth.filter.UserAuthenticationFilter;
 import com.knowway.auth.handler.AccessTokenHandler;
 import com.knowway.auth.handler.RefreshTokenHandler;
 import com.knowway.auth.handler.RefreshTokenProcessor;
 import com.knowway.auth.handler.SystemAuthenticationSuccessHandler;
+import com.knowway.auth.manager.AdminAuthenticationManager;
 import com.knowway.auth.manager.UserAuthenticationManager;
 import com.knowway.auth.service.AccessTokenInvalidationStrategy;
 import com.knowway.auth.service.AccessTokenSetAsBlackListWhenInvalidating;
@@ -18,28 +20,35 @@ import com.knowway.auth.service.RefreshTokenPersistLocationStrategy;
 import com.knowway.auth.service.RtrRefreshTokenReIssueStrategy;
 import com.knowway.auth.util.TypeConvertor;
 import com.knowway.user.repository.MemberRepository;
+import com.knowway.user.vo.Role;
 import java.util.Collections;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.ObjectPostProcessor;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.filter.CorsFilter;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -48,6 +57,7 @@ public class SecurityConfig {
   private final RedisTemplate<String, String> blackListRedisTemplate;
   private final RedisTemplate<String, String> refreshRedisTemplate;
   private final MemberRepository memberRepository;
+  private final ObjectPostProcessor<Object> objectPostProcessor;
 
 
   @Value("${encrypt.access.life-time}")
@@ -58,20 +68,32 @@ public class SecurityConfig {
   private String accessKey;
   @Value("${encrypt.refresh.life-time}")
   private long refreshKeyLifeTime;
+  @Value("${admin.pk}")
+  private String adminId;
+  @Value("${admin.password}")
+  private String adminPassword;
 
 
   public SecurityConfig(
       @Qualifier("redisTemplate") RedisTemplate<String, String> blackListRedisTemplate,
       @Qualifier("refreshRedisTemplate") RedisTemplate<String, String> refreshRedisTemplate,
-      MemberRepository memberRepository) {
+      MemberRepository memberRepository,
+      ObjectPostProcessor<Object> objectObjectPostProcessor
+  ) {
     this.blackListRedisTemplate = blackListRedisTemplate;
     this.refreshRedisTemplate = refreshRedisTemplate;
     this.memberRepository = memberRepository;
+    this.objectPostProcessor = objectObjectPostProcessor;
   }
+
 
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http,
-      AuthenticationSuccessHandler systemAuthenticationSuccessHandler) throws Exception {
+      @Qualifier("userAuthenticationFilter") UsernamePasswordAuthenticationFilter userAuthenticationFilter,
+      @Qualifier("adminAuthenticationFilter") UsernamePasswordAuthenticationFilter adminAuthenticationFilter,
+      @Qualifier("jwtAuthenticationFilter") OncePerRequestFilter jwtAuthenticationFilter
+  )
+      throws Exception {
     http
         .cors(corsCustomizer -> corsCustomizer.configurationSource(request -> {
           CorsConfiguration config = new CorsConfiguration();
@@ -93,33 +115,87 @@ public class SecurityConfig {
           request.requestMatchers(HttpMethod.POST, "/login").permitAll();
           request.requestMatchers(HttpMethod.POST, "/users").permitAll();
           request.requestMatchers(HttpMethod.POST, "/users/emails").permitAll();
-          request.anyRequest().authenticated();
+          request.requestMatchers("/admin/*").hasRole("ADMIN");
+          request.anyRequest().permitAll();
         })
-        .addFilterBefore(userAuthenticationFilter(systemAuthenticationSuccessHandler),
-            CorsFilter.class)
-        .addFilterAfter(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+        .addFilterBefore(userAuthenticationFilter, CorsFilter.class)
+        .addFilterBefore(adminAuthenticationFilter, UserAuthenticationFilter.class)
+        .addFilterAfter(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
     return http.build();
   }
 
-  @Bean
+  @Bean("jwtAuthenticationFilter")
   public JwtAuthenticationFilter jwtAuthenticationFilter() {
     return new JwtAuthenticationFilter(accessTokenHandler());
   }
 
   @Bean
   public UsernamePasswordAuthenticationFilter userAuthenticationFilter(
+      @Qualifier("userAuthenticationManager") AuthenticationManager authenticationManager,
       AuthenticationSuccessHandler systemAuthenticationSuccessHandler) {
     UserAuthenticationFilter authenticationFilter = new UserAuthenticationFilter(
-        userAuthenticationManager());
+        authenticationManager);
     authenticationFilter.setAuthenticationSuccessHandler(systemAuthenticationSuccessHandler);
-    authenticationFilter.setFilterProcessesUrl("/**/login");
+    authenticationFilter.setFilterProcessesUrl("/login");
     return authenticationFilter;
   }
 
   @Bean
-  public AuthenticationManager userAuthenticationManager() {
-    return new UserAuthenticationManager(memberRepository, bCryptPasswordEncoder());
+  public UsernamePasswordAuthenticationFilter adminAuthenticationFilter(
+      AuthenticationSuccessHandler systemAuthenticationSuccessHandler,
+      @Qualifier("adminAuthenticationManager") AuthenticationManager adminAuthenticationManager) {
+    AdminAuthenticationFilter authenticationFilter = new AdminAuthenticationFilter(
+        adminAuthenticationManager);
+    authenticationFilter.setAuthenticationSuccessHandler(systemAuthenticationSuccessHandler);
+    authenticationFilter.setFilterProcessesUrl("/admin/login");
+    return authenticationFilter;
+  }
+
+  @Qualifier("adminAuthManagerBuilder")
+  @Bean
+  public AuthenticationManagerBuilder adminAuthManagerBuilder(PasswordEncoder encoder,
+      @Qualifier("inMemoryUserDetailsService") UserDetailsService adminInMemoryDetails)
+      throws Exception {
+    AuthenticationManagerBuilder builder = new AuthenticationManagerBuilder(objectPostProcessor);
+    builder.userDetailsService(adminInMemoryDetails).passwordEncoder(encoder);
+    return builder;
+  }
+
+  @Primary
+  @Qualifier("userAuthManagerBuilder")
+  @Bean
+  public AuthenticationManagerBuilder userAuthManagerBuilder(
+      @Qualifier("userAuthenticationManager") AuthenticationManager authenticationManager) {
+    AuthenticationManagerBuilder builder = new AuthenticationManagerBuilder(objectPostProcessor);
+    builder.parentAuthenticationManager(authenticationManager);
+    return builder;
+  }
+
+  @Bean("inMemoryUserDetailsService")
+  public UserDetailsService inMemoryUserDetailsService() {
+    UserDetails admin = User.builder()
+        .username(adminId)
+        .password(bCryptPasswordEncoder().encode(adminPassword))
+        .roles(Role.ADMIN.name())
+        .build();
+
+    return new InMemoryUserDetailsManager(admin);
+  }
+
+  @Qualifier("adminAuthenticationManager")
+  @Bean
+  public AuthenticationManager adminAuthenticationManager(
+      @Qualifier("adminAuthManagerBuilder") AuthenticationManagerBuilder adminAuthenticationBuilder,
+      PasswordEncoder encoder) {
+    return new AdminAuthenticationManager<>(adminAuthenticationBuilder.getDefaultUserDetailsService(),
+        encoder);
+  }
+
+  @Qualifier("userAuthenticationManager")
+  @Bean
+  public AuthenticationManager userAuthenticationManager(PasswordEncoder encoder) {
+    return new UserAuthenticationManager(memberRepository, encoder);
   }
 
   @Bean

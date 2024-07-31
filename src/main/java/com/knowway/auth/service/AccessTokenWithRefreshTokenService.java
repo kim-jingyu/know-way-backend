@@ -5,7 +5,7 @@ import com.knowway.auth.handler.RefreshTokenHandler;
 import com.knowway.auth.util.TypeConvertor;
 import com.knowway.auth.vo.AuthRequestHeaderPrefix;
 import com.knowway.auth.vo.ClaimsKey;
-import com.knowway.auth.vo.RequestHeaderUserIdNaming;
+import com.knowway.auth.vo.RequestHeaderNaming;
 import com.knowway.user.repository.MemberRepository;
 import com.knowway.user.vo.Role;
 import jakarta.servlet.http.HttpServletRequest;
@@ -50,7 +50,7 @@ public class AccessTokenWithRefreshTokenService<K, V, USERID extends Long> exten
     String token = response.getHeader(AuthRequestHeaderPrefix.AUTHORIZATION_HEADER)
         .substring(AuthRequestHeaderPrefix.TOKEN_PREFIX.length());
 
-    USERID userId = (USERID) request.getAttribute(RequestHeaderUserIdNaming.REQUEST_HEADER_USER_ID);
+    USERID userId = (USERID) request.getAttribute(RequestHeaderNaming.REQUEST_HEADER_USER_ID);
 
     K key = tokenToKeyConvertor.convert(token);
     V value = userIdToValueConvertor.convert(userId);
@@ -68,7 +68,7 @@ public class AccessTokenWithRefreshTokenService<K, V, USERID extends Long> exten
   public String reAuthentication(K oldKey, V value) {
 
     USERID userId = valueToUserIdConvertor.convert(value);
-    Role role = getRoleById(userId);
+    String role = getRole();
 
     String accessToken = valueAccessTokenHandler.createToken(value,
         Map.of(ClaimsKey.ROLE_CLAIMS_KEY, role));

@@ -1,0 +1,3 @@
+admin:
+  email: ${ADMIN_PK}
+  password: ${ADMIN_PASSWORD}
