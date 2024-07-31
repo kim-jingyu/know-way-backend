@@ -1,19 +1,19 @@
 package com.knowway.user.mapper;
 
-import com.knowway.user.dto.UserSignUpDto;
+import com.knowway.user.dto.UserSignUpRequest;
 import com.knowway.user.entity.Member;
 import com.knowway.user.vo.Role;
 import javax.annotation.processing.Generated;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-07-30T11:45:57+0900",
+    date = "2024-07-31T16:04:20+0900",
     comments = "version: 1.5.0.Final, compiler: javac, environment: Java 17.0.11 (Amazon.com Inc.)"
 )
 public class UserMapperImpl implements UserMapper {
 
     @Override
-    public Member toMember(UserSignUpDto dto, String passwordEncoder) {
+    public Member toMember(UserSignUpRequest dto, String passwordEncoder) {
         if ( dto == null && passwordEncoder == null ) {
             return null;
         }
@@ -24,22 +24,22 @@ public class UserMapperImpl implements UserMapper {
             member.email( dto.getEmail() );
         }
         member.password( passwordEncoder );
-        member.role( Role.ROLE_USER );
+        member.role( Role.USER );
 
         return member.build();
     }
 
     @Override
-    public UserSignUpDto toDto(Member member) {
+    public UserSignUpRequest toDto(Member member) {
         if ( member == null ) {
             return null;
         }
 
-        UserSignUpDto.UserSignUpDtoBuilder userSignUpDto = UserSignUpDto.builder();
+        UserSignUpRequest.UserSignUpRequestBuilder userSignUpRequest = UserSignUpRequest.builder();
 
-        userSignUpDto.email( member.getEmail() );
-        userSignUpDto.password( member.getPassword() );
+        userSignUpRequest.email( member.getEmail() );
+        userSignUpRequest.password( member.getPassword() );
 
-        return userSignUpDto.build();
+        return userSignUpRequest.build();
     }
 }
