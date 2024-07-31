@@ -9,9 +9,11 @@ import com.knowway.departmentstore.repository.DepartmentStoreRepository;
 import com.knowway.user.entity.Member;
 import com.knowway.user.exception.UserException;
 import com.knowway.user.repository.MemberRepository;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -19,12 +21,14 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
+@Transactional(readOnly = true)
 public class ChatMessageServiceImpl implements ChatMessageService {
 
     private final ChatMessageRepository chatMessageRepository;
     private final DepartmentStoreRepository departmentStoreRepository;
     private final MemberRepository memberRepository;
 
+    @Transactional
     @Override
     public ChatMessage postMessage(ChatMessageRequest chatMessageRequest) {
         DepartmentStore departmentStore = departmentStoreRepository.getById(chatMessageRequest.getDepartmentStoreId());
