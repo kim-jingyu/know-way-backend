@@ -13,18 +13,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
 @RestController
-public class AuthController<USERID extends Long> {
+public class AuthController {
 
   private final AuthService authService;
-  private final UserService userService;
 
   @PostMapping("/login")
-  public ResponseEntity<UserChatMemberIdResponse> login(HttpServletRequest request,
-      HttpServletResponse response, @AuthenticationPrincipal USERID userId) {
-    authService.login(request, response);
-    UserChatMemberIdResponse loginResponse = userService.getUserChatMemberId(userId);
-    return ResponseEntity.ok().body(loginResponse);
+  public ResponseEntity<String> login(HttpServletRequest request,
+      HttpServletResponse response) {
+    return ResponseEntity.ok().body("유저 로그인 완료");
   }
+
 
   @PostMapping("/admin/login")
   public ResponseEntity<String> adminLogin(HttpServletRequest request, HttpServletResponse response) {

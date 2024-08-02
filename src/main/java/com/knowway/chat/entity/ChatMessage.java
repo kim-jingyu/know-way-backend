@@ -25,7 +25,7 @@ public class ChatMessage extends BaseEntity {
     @Column(name = "message_id", nullable = false)
     private Long messageId;
 
-    @JoinColumn(name = "member_chat_message_id",referencedColumnName = "member_chat_message_id")
+    @JoinColumn(name = "member_chat_message_id")
     @ManyToOne
     private Member member;
 
