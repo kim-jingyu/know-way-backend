@@ -25,7 +25,7 @@ public class ChatMessage extends BaseEntity {
     @Column(name = "message_id", nullable = false)
     private Long messageId;
 
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "member_chat_id")
     @ManyToOne
     private Member member;
 
@@ -39,9 +39,5 @@ public class ChatMessage extends BaseEntity {
 
     @Column(name = "message_nickname", nullable = false, length = 255)
     private String messageNickname;
-
-    public void updateDepartmentStore(DepartmentStore departmentStore) {
-        this.departmentStore = departmentStore;
-    }
 
 }
