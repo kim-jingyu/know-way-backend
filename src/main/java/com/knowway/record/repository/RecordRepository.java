@@ -2,6 +2,7 @@ package com.knowway.record.repository;
 
 import com.knowway.record.entity.Record;
 import com.knowway.user.dto.UserRecordDto;
+import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -22,4 +23,6 @@ public interface RecordRepository extends JpaRepository<Record, Long> {
       "WHERE r.member.id = :memberId")
   Page<UserRecordDto> findUserRecordsByMemberId(@Param("memberId") Long memberId,
       Pageable pageable);
+
+  Optional<Record> findByMemberIdAndId(Long memberId, Long recordId);
 }

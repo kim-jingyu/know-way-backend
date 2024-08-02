@@ -1,6 +1,7 @@
 package com.knowway.user.service;
 
 import com.knowway.auth.dto.UserChatMemberIdResponse;
+import com.knowway.record.entity.Record;
 import com.knowway.record.repository.RecordRepository;
 import com.knowway.user.dto.MemberProfileDto;
 import com.knowway.user.dto.UserProfileResponse;
@@ -54,5 +55,11 @@ public class UserServiceImpl implements UserService {
     return UserChatMemberIdResponse.builder().memberChatId(chatId).build();
   }
 
+
+  public void deleteRecord(Long userId, Long recordId) {
+    Record record = recordRepository.findByMemberIdAndId(userId, recordId)
+        .orElseThrow(() -> new UserException("해당 유저에 속한 레코드가 아닙니다."));
+    recordRepository.delete(record);
+  }
 
 }
