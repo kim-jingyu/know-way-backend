@@ -8,7 +8,7 @@ import java.util.List;
 public class DepartmentStoreRequest {
     private String departmentStoreName;
     private String departmentStoreBranch;
-    private String departmentStoreLatitude;
-    private String departmentStoreLongtitude;
+    private Double departmentStoreLatitude;
+    private Double departmentStoreLongtitude;
     private List<DepartmentStoreFloorRequest> floorData;
 }
