@@ -1,11 +1,13 @@
 package com.knowway.user.service;
 
+import com.knowway.auth.dto.UserChatMemberIdResponse;
 import com.knowway.record.repository.RecordRepository;
 import com.knowway.user.dto.MemberProfileDto;
 import com.knowway.user.dto.UserProfileResponse;
 import com.knowway.user.dto.UserRecordDto;
 import com.knowway.user.dto.UserRecordResponse;
 import com.knowway.user.dto.UserSignUpRequest;
+import com.knowway.user.exception.UserException;
 import com.knowway.user.mapper.UserMapper;
 import com.knowway.user.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -32,9 +34,9 @@ public class UserServiceImpl implements UserService {
   }
     @Override
     public Page<UserRecordResponse> getUserRecordHistory(Long userId, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        Page<UserRecordDto> dtoPage = recordRepository.findUserRecordsByMemberId(userId, pageable);
-        return dtoPage.map(UserMapper.INSTANCE::userRecordDtoToResponse);
+      Pageable pageable = PageRequest.of(page, size);
+      Page<UserRecordDto> dtoPage = recordRepository.findUserRecordsByMemberId(userId, pageable);
+      return dtoPage.map(UserMapper.INSTANCE::userRecordDtoToResponse);
     }
 
   @Override
@@ -42,5 +44,13 @@ public class UserServiceImpl implements UserService {
     MemberProfileDto dto = memberRepository.findMemberEmailAndPointSum(userid);
     return UserMapper.INSTANCE.profileDtoToProfileResponse(dto);
   }
+
+  @Override
+  public UserChatMemberIdResponse getUserChatMemberId(Long userId) {
+    Long chatId = memberRepository.getUserChatIdFromUserId(userId)
+        .orElseThrow(() -> new UserException("존재하지 않은 유저입니다."));
+    return UserChatMemberIdResponse.builder().memberChatId(chatId).build();
+  }
+
 
 }

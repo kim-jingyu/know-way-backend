@@ -40,7 +40,6 @@ public class Member extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "member_seq")
-    @SequenceGenerator(name = "member_seq", sequenceName = "member_seq", allocationSize = 1)
     @Column(name = "member_id", nullable = false)
     private Long id;
 
@@ -54,6 +53,7 @@ public class Member extends BaseEntity {
     @Column(name = "member_role", length = 10, nullable = false)
     private Role role;
 
+    @SequenceGenerator(name = "member_chat_id_seq", sequenceName = "member_chat_id_seq", allocationSize = 1)
     @Column(name = "member_chat_id", nullable = false)
     private Long chatId;
 
