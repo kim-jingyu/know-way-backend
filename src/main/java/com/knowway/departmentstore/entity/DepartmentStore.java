@@ -26,9 +26,9 @@ public class DepartmentStore extends BaseEntity {
     @Column(nullable = false)
     private String departmentStoreBranch;
     @Column(nullable = false)
-    private String departmentStoreLatitude;
+    private Double departmentStoreLatitude;
     @Column(nullable = false)
-    private String departmentStoreLongtitude;
+    private Double departmentStoreLongtitude;
 
     @Builder.Default
     @OneToMany(mappedBy = "departmentStore", cascade = CascadeType.ALL, orphanRemoval = true)

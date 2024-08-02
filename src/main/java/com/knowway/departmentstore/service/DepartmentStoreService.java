@@ -10,7 +10,7 @@ import java.util.List;
 public interface DepartmentStoreService {
     Long makeDepartmentStore(DepartmentStoreRequest request);
     Page<DepartmentStoreResponse> getAllDepartmentStoreList(Integer size, Integer page);
-    Page<DepartmentStoreResponse> getDepartmentStoreListByLocation(Integer size, Integer page, String latitude, String longtitude);
+    List<DepartmentStoreResponse> getDepartmentStoreListByLocation(Double latitude, Double longtitude);
     DepartmentStoreFloorMapResponse getDepartmentStoreFloorMap(Long deptId, String floor);
     List<DepartmentStoreFloorMapResponse> getDepartmentStoreFloorList(Long departmentStoreId);
     DepartmentStoreResponse getDepartmentStoreByBranch(String departmentStoreBranch);

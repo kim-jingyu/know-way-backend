@@ -46,12 +46,10 @@ public class DepartmentStoreController {
     }
 
     @GetMapping(value = "/loc")
-    public ResponseEntity<Page<DepartmentStoreResponse>> getDepartmentStoresByLocation(@RequestParam(value = "size", defaultValue = "5") Integer size,
-                                                                                       @RequestParam(value = "page", defaultValue = "0") Integer page,
-                                                                                       @RequestParam(value = "latitude") String latitude,
-                                                                                       @RequestParam(value = "longtitude") String longtitude) {
+    public ResponseEntity<List<DepartmentStoreResponse>> getDepartmentStoresByLocation(@RequestParam(value = "latitude") Double latitude,
+                                                                                       @RequestParam(value = "longtitude") Double longtitude) {
         return ResponseEntity.ok()
-                .body(service.getDepartmentStoreListByLocation(size, page, latitude, longtitude));
+                .body(service.getDepartmentStoreListByLocation(latitude, longtitude));
     }
 
     @GetMapping(value = "/{deptId}/floors")
