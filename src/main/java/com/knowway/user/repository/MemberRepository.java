@@ -19,11 +19,11 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
   Optional<Member> findById(Long id);
 
-  Optional<Member> findByChatId(Long id);
+  Optional<Member> findByChatMessageId(Long id);
 
   Optional<Member> findByEmail(String email);
 
-  @Query("SELECT m.chatId " +
+  @Query("SELECT m.chatMessageId " +
       "FROM Member m "+
       "wHERE m.id =:userId ")
   Optional<Long> getUserChatIdFromUserId(Long userId);

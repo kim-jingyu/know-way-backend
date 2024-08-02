@@ -4,6 +4,7 @@ package com.knowway.user.entity;
 import com.knowway.common.entity.BaseEntity;
 import com.knowway.point.entity.Point;
 import com.knowway.record.entity.Record;
+import com.knowway.user.annotation.InjectSequenceValue;
 import com.knowway.user.vo.Role;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -14,14 +15,13 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -29,17 +29,11 @@ import lombok.NoArgsConstructor;
 @Builder
 @Entity
 @Table(name = "member",
-    uniqueConstraints = {
-        @UniqueConstraint(name = "unique_member_chat_id", columnNames = "member_chat_id")
-    },
-    indexes = {
-        @Index(name = "idx_member_chat_id", columnList = "member_chat_id")
-    }
-)
+       indexes = @Index(name = "idx_member_chat_message_id", columnList = "member_chat_message_id"))
 public class Member extends BaseEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "member_seq")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_id", nullable = false)
     private Long id;
 
@@ -53,13 +47,15 @@ public class Member extends BaseEntity {
     @Column(name = "member_role", length = 10, nullable = false)
     private Role role;
 
-    @SequenceGenerator(name = "member_chat_id_seq", sequenceName = "member_chat_id_seq", allocationSize = 1)
-    @Column(name = "member_chat_id", nullable = false)
-    private Long chatId;
-
     @OneToMany(mappedBy = "member")
     private List<Point> pointList;
 
     @OneToMany(mappedBy = "member")
     private List<Record> recordList;
+
+    @InjectSequenceValue(sequencename = "member_chat_message_id_seq")
+    @Column(name = "member_chat_message_id", nullable = false, unique = true)
+    private Long chatMessageId;
+
 }
+

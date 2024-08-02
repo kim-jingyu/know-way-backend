@@ -8,11 +8,9 @@ spring:
       -  application-s3.yml
       -  application-redis.yml
 
+
 logging:
   level:
-#    org.springframework: DEBUG
-#    org.springframework.data.redis: DEBUG
-#    io.lettuce.core: DEBUG
     root: INFO
     org.springframework.security: DEBUG
     org.springframework.security.web: DEBUG
