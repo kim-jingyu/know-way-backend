@@ -4,6 +4,7 @@ package com.knowway.user.entity;
 import com.knowway.common.entity.BaseEntity;
 import com.knowway.point.entity.Point;
 import com.knowway.record.entity.Record;
+import com.knowway.user.annotation.InjectSequenceValue;
 import com.knowway.user.vo.Role;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -12,20 +13,23 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.relational.core.mapping.Table;
+
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Builder
 @Entity
-@Table(name = "member")
+@Table(name = "member",
+       indexes = @Index(name = "idx_member_chat_message_id", columnList = "member_chat_message_id"))
 public class Member extends BaseEntity {
 
     @Id
@@ -49,9 +53,9 @@ public class Member extends BaseEntity {
     @OneToMany(mappedBy = "member")
     private List<Record> recordList;
 
-
-
-
-
+    @InjectSequenceValue(sequencename = "member_chat_message_id_seq")
+    @Column(name = "member_chat_message_id", nullable = false, unique = true)
+    private Long chatMessageId;
 
 }
+

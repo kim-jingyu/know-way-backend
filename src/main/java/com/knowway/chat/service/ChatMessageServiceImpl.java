@@ -32,7 +32,7 @@ public class ChatMessageServiceImpl implements ChatMessageService {
     @Override
     public ChatMessage postMessage(ChatMessageRequest chatMessageRequest) {
         DepartmentStore departmentStore = departmentStoreRepository.getById(chatMessageRequest.getDepartmentStoreId());
-        Member member = memberRepository.findById(chatMessageRequest.getMemberId())
+        Member member = memberRepository.findByChatMessageId(chatMessageRequest.getMemberChatId())
                 .orElseThrow(() -> new UserException("유효하지 않은 아이디입니다."));
         ChatMessage chatMessage = ChatMessage.builder()
                 .member(member)
@@ -49,7 +49,7 @@ public class ChatMessageServiceImpl implements ChatMessageService {
         List<ChatMessage> messages = chatMessageRepository.findByDepartmentStore_DepartmentStoreIdOrderByCreatedAt(departmentStoreId);
         return messages.stream()
                 .map(message -> new ChatMessageResponse(
-                        message.getMember().getId(),
+                        message.getMember().getChatMessageId(),
                         message.getMessageId(),
                         message.getCreatedAt(),
                         message.getMessageNickname(),

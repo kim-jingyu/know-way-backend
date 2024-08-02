@@ -1,6 +1,7 @@
 package com.knowway.user.controller;
 
 
+import com.knowway.auth.dto.UserChatMemberIdResponse;
 import com.knowway.user.dto.EmailDuplicationCheckRequset;
 import com.knowway.user.dto.UserProfileResponse;
 import com.knowway.user.dto.UserRecordResponse;
@@ -42,6 +43,12 @@ public class UserController<USERID extends Long> {
       @RequestBody @Valid UserSignUpRequest signUpDto) {
     userService.signUp(signUpDto);
     return ResponseEntity.ok().body("회원가입 완료");
+
+  }
+
+  @GetMapping("/chat-id")
+  public ResponseEntity<UserChatMemberIdResponse> getUserChatId(@AuthenticationPrincipal USERID userId) {
+    return ResponseEntity.ok().body(userService.getUserChatMemberId(userId));
 
   }
 

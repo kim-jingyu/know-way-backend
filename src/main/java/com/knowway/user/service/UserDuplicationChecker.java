@@ -15,7 +15,8 @@ public class UserDuplicationChecker {
 
   private final MemberRepository memberRepository;
 
-   public void emailDuplicationChecker(String email){
+   public void
+   emailDuplicationChecker(String email){
     if(memberRepository.findByEmail(email).isPresent()) throw new UserException("이미 존재하는 이메일입니다.");
 
   }

@@ -1,5 +1,6 @@
 package com.knowway.user.service;
 
+import com.knowway.auth.dto.UserChatMemberIdResponse;
 import com.knowway.record.entity.Record;
 import com.knowway.record.repository.RecordRepository;
 import com.knowway.user.dto.MemberProfileDto;
@@ -7,6 +8,7 @@ import com.knowway.user.dto.UserProfileResponse;
 import com.knowway.user.dto.UserRecordDto;
 import com.knowway.user.dto.UserRecordResponse;
 import com.knowway.user.dto.UserSignUpRequest;
+import com.knowway.user.entity.Member;
 import com.knowway.user.exception.UserException;
 import com.knowway.user.mapper.UserMapper;
 import com.knowway.user.repository.MemberRepository;
@@ -16,6 +18,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
@@ -29,8 +32,8 @@ public class UserServiceImpl implements UserService {
   @Override
   public void signUp(UserSignUpRequest signUpDto) {
     userDuplicationChecker.emailDuplicationChecker(signUpDto.getEmail());
-    memberRepository.save(
-        UserMapper.INSTANCE.toMember(signUpDto, encoder.encode(signUpDto.getPassword())));
+     Member member = UserMapper.INSTANCE.toMember(signUpDto, encoder.encode(signUpDto.getPassword()));
+    memberRepository.save(member);
   }
     @Override
     public Page<UserRecordResponse> getUserRecordHistory(Long userId, int page, int size) {
@@ -46,6 +49,13 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
+  public UserChatMemberIdResponse getUserChatMemberId(Long userId) {
+    Long chatId = memberRepository.getUserChatIdFromUserId(userId)
+        .orElseThrow(() -> new UserException("존재하지 않은 유저입니다."));
+    return UserChatMemberIdResponse.builder().memberChatId(chatId).build();
+  }
+
+
   public void deleteRecord(Long userId, Long recordId) {
     Record record = recordRepository.findByMemberIdAndId(userId, recordId)
         .orElseThrow(() -> new UserException("해당 유저에 속한 레코드가 아닙니다."));

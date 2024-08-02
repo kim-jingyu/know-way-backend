@@ -1,7 +1,7 @@
 package com.knowway.auth.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.knowway.auth.dto.UserLoginDto;
+import com.knowway.auth.dto.UserLoginRequest;
 import com.knowway.auth.exception.AuthException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -23,11 +23,11 @@ public class UserAuthenticationFilter extends UsernamePasswordAuthenticationFilt
     this.authenticationManager = authenticationManager;
   }
 
-  private UserLoginDto getLoginDtoFromRequest(HttpServletRequest request)
+  private UserLoginRequest getLoginDtoFromRequest(HttpServletRequest request)
       throws IOException {
     ObjectMapper mapper = new ObjectMapper();
     return mapper.readValue(request.getInputStream(),
-        UserLoginDto.class);
+        UserLoginRequest.class);
   }
 
 
@@ -36,7 +36,7 @@ public class UserAuthenticationFilter extends UsernamePasswordAuthenticationFilt
       HttpServletResponse response)
       throws AuthenticationException {
     try {
-      UserLoginDto dto = getLoginDtoFromRequest(request);
+      UserLoginRequest dto = getLoginDtoFromRequest(request);
       return authenticationManager.authenticate(
           new UsernamePasswordAuthenticationToken(dto.getEmail(), dto.getPassword(),null));
     } catch (BadCredentialsException | IOException | AuthException e) {
