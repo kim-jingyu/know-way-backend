@@ -11,31 +11,31 @@ import com.knowway.user.vo.Role;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.Map;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
 
-
+@Service
 public class AccessTokenWithRefreshTokenService<K, V, USERID extends Long> extends
     RestfulAuthService<K, USERID> {
 
-  private final TypeConvertor<V, USERID> valueToUserIdConvertor;
   private final TypeConvertor<String, K> tokenToKeyConvertor;
   private final TypeConvertor<USERID, V> userIdToValueConvertor;
   private final RefreshTokenHandler<K, V> refreshTokenHandler;
   private final AccessTokenHandler<V> valueAccessTokenHandler;
 
+  @Autowired
   public AccessTokenWithRefreshTokenService(
       @Qualifier("tokenToKeyConverter") TypeConvertor<String, K> tokenToKeyConvertor,
       @Qualifier("userIdToSubjectConverter") TypeConvertor<USERID, String> userIdToSubjectConvertor,
       @Qualifier("accessTokenHandler") AccessTokenHandler<K> accessTokenHandler,
       MemberRepository memberRepository,
-      @Qualifier("valueToUserIdConverter") TypeConvertor<V, USERID> valueToUserIdConvertor,
       @Qualifier("keyToTokenConverter") TypeConvertor<String, K> keyToTokenConvertor,
       @Qualifier("userIdToValueConverter") TypeConvertor<USERID, V> userIdToValueConvertor,
       @Qualifier("refreshTokenHandler") RefreshTokenHandler<K, V> refreshTokenHandler,
       @Qualifier("valueAccessTokenHandler") AccessTokenHandler<V> valueAccessTokenHandler) {
 
     super(tokenToKeyConvertor, userIdToSubjectConvertor, accessTokenHandler, memberRepository);
-    this.valueToUserIdConvertor = valueToUserIdConvertor;
     this.tokenToKeyConvertor = keyToTokenConvertor;
     this.userIdToValueConvertor = userIdToValueConvertor;
     this.refreshTokenHandler = refreshTokenHandler;
@@ -67,7 +67,6 @@ public class AccessTokenWithRefreshTokenService<K, V, USERID extends Long> exten
 
   public String reAuthentication(K oldKey, V value) {
 
-    USERID userId = valueToUserIdConvertor.convert(value);
     Role role = getRole();
 
     String accessToken = valueAccessTokenHandler.createToken(value,
