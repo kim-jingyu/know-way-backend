@@ -27,15 +27,9 @@ public class AuthController<USERID extends Long> {
   @GetMapping("/admin")
   public ResponseEntity<Boolean> isUserAdmin(@AuthenticationPrincipal USERID userId) {
     Role role = userService.getRole(userId);
-    return ResponseEntity.ok().body(role.equals(Role.ADMIN));
+    return ResponseEntity.ok().body(role.equals(Role.ROLE_ADMIN));
   }
 
-  @PostMapping("/admin/login")
-  public ResponseEntity<String> adminLogin(HttpServletRequest request,
-      HttpServletResponse response) {
-    authService.login(request, response);
-    return ResponseEntity.ok().body("로그인 완료");
-  }
 
   @PostMapping("/logout")
   public ResponseEntity<String> logout(HttpServletRequest request, HttpServletResponse response) {

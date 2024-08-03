@@ -4,7 +4,7 @@ import com.knowway.auth.exception.AuthException;
 import com.knowway.user.vo.Role;
 import java.util.Collections;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -15,7 +15,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @RequiredArgsConstructor
-public class AdminAuthenticationManager<ADMINID extends Long> implements AuthenticationManager {
+public class AdminAuthenticationProvider<ADMINID extends Long> implements AuthenticationProvider {
 
   private final UserDetailsService userDetailService;
   private final PasswordEncoder encoder;
@@ -32,12 +32,17 @@ public class AdminAuthenticationManager<ADMINID extends Long> implements Authent
 
   }
 
+  @Override
+  public boolean supports(Class<?> authentication) {
+    return UsernamePasswordAuthenticationToken.class.isAssignableFrom(authentication);
+  }
+
   private Role getRole(UserDetails adminUserDetail) {
     return adminUserDetail.getAuthorities().stream()
         .map(GrantedAuthority::getAuthority)
         .filter(authority -> authority.contains("ADMIN"))
         .findFirst()
-        .map(authority -> Role.ADMIN)
+        .map(authority -> Role.ROLE_ADMIN)
         .orElseThrow(() -> new AuthException("ADMIN의 role이 아닙니다."));
   }
 }

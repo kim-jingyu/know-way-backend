@@ -1,13 +1,12 @@
 package com.knowway.auth.config;
 
-import com.knowway.auth.filter.AdminAuthenticationFilter;
 import com.knowway.auth.filter.JwtAuthenticationFilter;
 import com.knowway.auth.filter.UserAuthenticationFilter;
 import com.knowway.auth.handler.AccessTokenHandler;
 import com.knowway.auth.handler.RefreshTokenHandler;
 import com.knowway.auth.handler.RefreshTokenProcessor;
 import com.knowway.auth.handler.SystemAuthenticationSuccessHandler;
-import com.knowway.auth.manager.AdminAuthenticationManager;
+import com.knowway.auth.manager.AdminAuthenticationProvider;
 import com.knowway.auth.manager.UserAuthenticationManager;
 import com.knowway.auth.service.AccessTokenInvalidationStrategy;
 import com.knowway.auth.service.AccessTokenSetAsBlackListWhenInvalidating;
@@ -20,7 +19,6 @@ import com.knowway.auth.service.RefreshTokenPersistLocationStrategy;
 import com.knowway.auth.service.RtrRefreshTokenReIssueStrategy;
 import com.knowway.auth.util.TypeConvertor;
 import com.knowway.user.repository.MemberRepository;
-import com.knowway.user.vo.Role;
 import java.util.Collections;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -31,8 +29,8 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.ObjectPostProcessor;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -44,7 +42,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.access.intercept.AuthorizationFilter;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -58,7 +55,6 @@ public class SecurityConfig {
   private final RedisTemplate<String, String> blackListRedisTemplate;
   private final RedisTemplate<String, String> refreshRedisTemplate;
   private final MemberRepository memberRepository;
-  private final ObjectPostProcessor<Object> objectPostProcessor;
 
 
   @Value("${encrypt.access.life-time}")
@@ -78,20 +74,17 @@ public class SecurityConfig {
   public SecurityConfig(
       @Qualifier("redisTemplate") RedisTemplate<String, String> blackListRedisTemplate,
       @Qualifier("refreshRedisTemplate") RedisTemplate<String, String> refreshRedisTemplate,
-      MemberRepository memberRepository,
-      ObjectPostProcessor<Object> objectObjectPostProcessor
+      MemberRepository memberRepository
   ) {
     this.blackListRedisTemplate = blackListRedisTemplate;
     this.refreshRedisTemplate = refreshRedisTemplate;
     this.memberRepository = memberRepository;
-    this.objectPostProcessor = objectObjectPostProcessor;
   }
 
 
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http,
       @Qualifier("userAuthenticationFilter") UsernamePasswordAuthenticationFilter userAuthenticationFilter,
-      @Qualifier("adminAuthenticationFilter") UsernamePasswordAuthenticationFilter adminAuthenticationFilter,
       @Qualifier("jwtAuthenticationFilter") OncePerRequestFilter jwtAuthenticationFilter
   )
       throws Exception {
@@ -116,11 +109,10 @@ public class SecurityConfig {
           request.requestMatchers(HttpMethod.POST, "/login").permitAll();
           request.requestMatchers(HttpMethod.POST, "/users").permitAll();
           request.requestMatchers(HttpMethod.POST, "/users/emails").permitAll();
-          request.requestMatchers("/admin*").hasRole("ADMIN");
+          request.requestMatchers("/admin**").hasAuthority("ROLE_ADMIN");
           request.anyRequest().permitAll();
         })
         .addFilterBefore(userAuthenticationFilter, CorsFilter.class)
-        .addFilterBefore(adminAuthenticationFilter, UserAuthenticationFilter.class)
         .addFilterAfter(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
     return http.build();
@@ -131,9 +123,18 @@ public class SecurityConfig {
     return new JwtAuthenticationFilter(accessTokenHandler());
   }
 
+  @Primary
+  @Bean("systemAuthentication")
+  public ProviderManager systemAuthentication(AuthenticationManager parentManager,
+      @Qualifier("adminAuthenticationProvider")
+          AuthenticationProvider adminProvider) {
+    return new ProviderManager(List.of(adminProvider), parentManager);
+  }
+
+
   @Bean
   public UsernamePasswordAuthenticationFilter userAuthenticationFilter(
-      @Qualifier("userAuthenticationManager") AuthenticationManager authenticationManager,
+      @Qualifier("systemAuthentication") ProviderManager authenticationManager,
       AuthenticationSuccessHandler systemAuthenticationSuccessHandler) {
     UserAuthenticationFilter authenticationFilter = new UserAuthenticationFilter(
         authenticationManager);
@@ -142,60 +143,29 @@ public class SecurityConfig {
     return authenticationFilter;
   }
 
-  @Bean
-  public UsernamePasswordAuthenticationFilter adminAuthenticationFilter(
-      AuthenticationSuccessHandler systemAuthenticationSuccessHandler,
-      @Qualifier("adminAuthenticationManager") AuthenticationManager adminAuthenticationManager) {
-    AdminAuthenticationFilter authenticationFilter = new AdminAuthenticationFilter(
-        adminAuthenticationManager);
-    authenticationFilter.setAuthenticationSuccessHandler(systemAuthenticationSuccessHandler);
-    authenticationFilter.setFilterProcessesUrl("/admin/login");
-    return authenticationFilter;
-  }
-
-  @Qualifier("adminAuthManagerBuilder")
-  @Bean
-  public AuthenticationManagerBuilder adminAuthManagerBuilder(PasswordEncoder encoder,
-      @Qualifier("inMemoryUserDetailsService") UserDetailsService adminInMemoryDetails)
-      throws Exception {
-    AuthenticationManagerBuilder builder = new AuthenticationManagerBuilder(objectPostProcessor);
-    builder.userDetailsService(adminInMemoryDetails).passwordEncoder(encoder);
-    return builder;
-  }
-
-  @Primary
-  @Qualifier("userAuthManagerBuilder")
-  @Bean
-  public AuthenticationManagerBuilder userAuthManagerBuilder(
-      @Qualifier("userAuthenticationManager") AuthenticationManager authenticationManager) {
-    AuthenticationManagerBuilder builder = new AuthenticationManagerBuilder(objectPostProcessor);
-    builder.parentAuthenticationManager(authenticationManager);
-    return builder;
-  }
-
   @Bean("inMemoryUserDetailsService")
   public UserDetailsService inMemoryUserDetailsService() {
     UserDetails admin = User.builder()
         .username(adminId)
         .password(bCryptPasswordEncoder().encode(adminPassword))
-        .roles(Role.ADMIN.name())
+        .roles("ADMIN")
         .build();
 
     return new InMemoryUserDetailsManager(admin);
   }
 
-  @Qualifier("adminAuthenticationManager")
+  @Qualifier("adminAuthenticationProvider")
   @Bean
-  public AuthenticationManager adminAuthenticationManager(
-      @Qualifier("adminAuthManagerBuilder") AuthenticationManagerBuilder adminAuthenticationBuilder,
+  public AuthenticationProvider adminAuthenticationProvider(
+      @Qualifier("inMemoryUserDetailsService") UserDetailsService inMemoryUserDetailsService,
       PasswordEncoder encoder) {
-    return new AdminAuthenticationManager<>(adminAuthenticationBuilder.getDefaultUserDetailsService(),
+    return new AdminAuthenticationProvider<>(inMemoryUserDetailsService,
         encoder);
   }
 
-  @Qualifier("userAuthenticationManager")
+  @Qualifier("parentManager")
   @Bean
-  public AuthenticationManager userAuthenticationManager(PasswordEncoder encoder) {
+  public AuthenticationManager parentManager(PasswordEncoder encoder) {
     return new UserAuthenticationManager(memberRepository, encoder);
   }
 
@@ -304,7 +274,7 @@ public class SecurityConfig {
   }
 
   @Configuration
-  public class ConversionConfig {
+  public static class ConversionConfig {
 
     @Bean
     public TypeConvertor<String, String> tokenToKeyConverter() {
