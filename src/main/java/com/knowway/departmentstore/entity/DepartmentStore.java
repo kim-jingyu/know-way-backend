@@ -28,7 +28,7 @@ public class DepartmentStore extends BaseEntity {
     @Column(nullable = false)
     private Double departmentStoreLatitude;
     @Column(nullable = false)
-    private Double departmentStoreLongtitude;
+    private Double departmentStoreLongitude;
 
     @Builder.Default
     @OneToMany(mappedBy = "departmentStore", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -38,17 +38,20 @@ public class DepartmentStore extends BaseEntity {
     @JsonIgnore
     private List<ChatMessage> chatMessageList;
 
+    public void addDeptFloor(DepartmentStoreFloor departmentStoreFloor) {
+        departmentStoreFloorList.add(departmentStoreFloor);
+        departmentStoreFloor.setDepartmentStore(this);
+    }
+
     public static DepartmentStore createDepartmentStore(DepartmentStoreRequest request, List<DepartmentStoreFloor> departmentStoreFloorList) {
         DepartmentStore departmentStore = DepartmentStore.builder()
                 .departmentStoreName(request.getDepartmentStoreName())
                 .departmentStoreBranch(request.getDepartmentStoreBranch())
                 .departmentStoreLatitude(request.getDepartmentStoreLatitude())
-                .departmentStoreLongtitude(request.getDepartmentStoreLongtitude())
+                .departmentStoreLongitude(request.getDepartmentStoreLongitude())
                 .build();
         for (DepartmentStoreFloor departmentStoreFloor : departmentStoreFloorList) {
-            departmentStoreFloor.setDepartmentStore(departmentStore);
-            List<DepartmentStoreFloor> departmentStoreFloorList1 = departmentStore.getDepartmentStoreFloorList();
-            departmentStoreFloorList1.add(departmentStoreFloor);
+            departmentStore.addDeptFloor(departmentStoreFloor);
         }
         return departmentStore;
     }
