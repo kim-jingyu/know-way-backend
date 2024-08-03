@@ -32,15 +32,19 @@ public class UserServiceImpl implements UserService {
   @Override
   public void signUp(UserSignUpRequest signUpDto) {
     userDuplicationChecker.emailDuplicationChecker(signUpDto.getEmail());
-     Member member = UserMapper.INSTANCE.toMember(signUpDto, encoder.encode(signUpDto.getPassword()));
+    Member member = UserMapper.INSTANCE.toMember(signUpDto,
+        encoder.encode(signUpDto.getPassword()));
     memberRepository.save(member);
   }
-    @Override
-    public Page<UserRecordResponse> getUserRecordHistory(Long userId, int page, int size) {
-      Pageable pageable = PageRequest.of(page, size);
-      Page<UserRecordDto> dtoPage = recordRepository.findUserRecordsByMemberId(userId, pageable);
-      return dtoPage.map(UserMapper.INSTANCE::userRecordDtoToResponse);
-    }
+
+  @Override
+  public Page<UserRecordResponse> getUserRecordHistory(Long userId, Boolean isSelectedByAdmin,
+      int page, int size) {
+    Pageable pageable = PageRequest.of(page, size);
+    Page<UserRecordDto> dtoPage = recordRepository.findUserRecordsByMemberIdAndRecordIsSelected(
+        userId, isSelectedByAdmin, pageable);
+    return dtoPage.map(UserMapper.INSTANCE::userRecordDtoToResponse);
+  }
 
   @Override
   public UserProfileResponse getUserProfileInfo(Long userid) {

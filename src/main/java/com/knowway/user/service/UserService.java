@@ -13,7 +13,7 @@ public interface UserService {
 
   void deleteRecord(Long userId, Long recordId);
 
-  Page<UserRecordResponse> getUserRecordHistory(Long userid, int page, int size);
+  Page<UserRecordResponse> getUserRecordHistory(Long userid, Boolean isSelectedByAdmin,int page, int size);
 
   UserProfileResponse getUserProfileInfo(Long userid);
   UserChatMemberIdResponse getUserChatMemberId(Long userId);
