@@ -116,7 +116,7 @@ public class SecurityConfig {
           request.requestMatchers(HttpMethod.POST, "/login").permitAll();
           request.requestMatchers(HttpMethod.POST, "/users").permitAll();
           request.requestMatchers(HttpMethod.POST, "/users/emails").permitAll();
-          request.requestMatchers("/admin/*").hasRole("ADMIN");
+          request.requestMatchers("/admin*").hasRole("ADMIN");
           request.anyRequest().permitAll();
         })
         .addFilterBefore(userAuthenticationFilter, CorsFilter.class)

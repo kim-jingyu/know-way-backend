@@ -30,17 +30,17 @@ public class UserController<USERID extends Long> {
 
 
   @PostMapping("/emails")
-  public ResponseEntity<String> emailDuplicationCheck(
+  public ResponseEntity<Boolean> emailDuplicationCheck(
       @RequestBody @Valid EmailDuplicationCheckRequset emailDuplicationCheckRequset) {
     duplicationChecker.emailDuplicationChecker(emailDuplicationCheckRequset.getEmail());
-    return ResponseEntity.ok().body("중복되지 않은 이메일입니다.");
+    return ResponseEntity.ok().body(Boolean.TRUE);
   }
 
   @PostMapping
-  public ResponseEntity<String> signUp(
+  public ResponseEntity<Boolean> signUp(
       @RequestBody @Valid UserSignUpRequest signUpDto) {
     userService.signUp(signUpDto);
-    return ResponseEntity.ok().body("회원가입 완료");
+    return ResponseEntity.ok().body(Boolean.TRUE);
 
   }
 
