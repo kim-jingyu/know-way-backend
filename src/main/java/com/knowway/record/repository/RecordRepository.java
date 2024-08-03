@@ -30,7 +30,7 @@ public interface RecordRepository extends JpaRepository<Record, Long> {
   Optional<Record> findByMemberIdAndId(Long memberId, Long recordId);
 
   @Query("SELECT new com.knowway.record.dto.RecordResponse(" +
-          "r.id, r.recordLatitude, r.recordLongitude, r.recordPath) " +
+          "r.id, r.recordTitle, r.recordLatitude, r.recordLongitude, r.recordPath) " +
           "FROM Record r " +
           "JOIN r.departmentStoreFloor dsf " +
           "JOIN r.departmentStore ds " +

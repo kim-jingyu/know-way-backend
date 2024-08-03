@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -13,6 +12,7 @@ import java.time.LocalDateTime;
 @Getter
 public class RecordResponse {
     private Long recordId;
+    private String recordTitle;
     private String recordLatitude;
     private String recordLongitude;
     private String recordPath;

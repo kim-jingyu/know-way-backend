@@ -75,6 +75,7 @@ public class RecordServiceImpl implements RecordService {
                     .stream()
                     .map(record -> new RecordResponse(
                             record.getRecordId(),
+                            record.getRecordTitle(),
                             record.getRecordLatitude(),
                             record.getRecordLongitude(),
                             record.getRecordPath()
