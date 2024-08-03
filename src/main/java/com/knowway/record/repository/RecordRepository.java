@@ -15,7 +15,7 @@ public interface RecordRepository extends JpaRepository<Record, Long> {
 
 
   @Query("SELECT new com.knowway.user.dto.UserRecordDto(" +
-      "r.id, r.recordPath, r.recordIsSelected, " +
+      "r.id, r.recordPath, r.recordTitle,r.recordIsSelected," +
       "ds.departmentStoreName,ds.departmentStoreBranch,dsf.departmentStoreFloor) " +
       "FROM Record r " +
       "JOIN r.departmentStoreFloor dsf " +

@@ -3,7 +3,6 @@ package com.knowway.user.repository;
 import com.knowway.user.dto.MemberProfileDto;
 import com.knowway.user.entity.Member;
 import java.util.Optional;
-import java.util.OptionalLong;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;

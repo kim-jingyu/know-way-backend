@@ -1,11 +1,11 @@
 package com.knowway.user.mapper;
 
 import com.knowway.user.dto.MemberProfileDto;
+import com.knowway.user.dto.UserProfileResponse;
 import com.knowway.user.dto.UserRecordDto;
 import com.knowway.user.dto.UserRecordResponse;
 import com.knowway.user.dto.UserSignUpRequest;
 import com.knowway.user.entity.Member;
-import com.knowway.user.dto.UserProfileResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
@@ -29,6 +29,7 @@ public interface UserMapper {
 
     @Mapping(source = "recordId", target = "recordId")
     @Mapping(source = "recordUrl", target = "recordUrl")
+    @Mapping(source = "recordTitle", target = "recordTitle")
     @Mapping(source = "isSelectedByAdmin", target = "isSelectedByAdmin")
     @Mapping(source = "departmentName", target = "departmentName")
     @Mapping(source = "departmentLocationName", target = "departmentLocationName")

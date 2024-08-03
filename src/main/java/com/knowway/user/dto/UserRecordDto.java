@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -15,6 +14,7 @@ public class UserRecordDto {
 
   private Long recordId;
   private String recordUrl;
+  private String recordTitle;
   private Boolean isSelectedByAdmin;
   private String departmentName;
   private String departmentLocationName;
