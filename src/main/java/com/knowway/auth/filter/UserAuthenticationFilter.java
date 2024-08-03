@@ -18,7 +18,7 @@ public class UserAuthenticationFilter extends UsernamePasswordAuthenticationFilt
 
   private final AuthenticationManager authenticationManager;
 
-  public UserAuthenticationFilter(@Qualifier("userAuthenticationManager") AuthenticationManager authenticationManager) {
+  public UserAuthenticationFilter(@Qualifier("parentManager") AuthenticationManager authenticationManager) {
     super(authenticationManager);
     this.authenticationManager = authenticationManager;
   }

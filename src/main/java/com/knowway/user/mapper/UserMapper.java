@@ -17,7 +17,7 @@ public interface UserMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "password", source = "passwordEncoder")
-    @Mapping(target = "role", constant= "USER")
+    @Mapping(target = "role", constant= "ROLE_USER")
     Member toMember(UserSignUpRequest dto, String passwordEncoder);
 
 
