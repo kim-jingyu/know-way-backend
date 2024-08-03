@@ -69,22 +69,16 @@ public class RecordServiceImpl implements RecordService {
 
     @Override
     public List<RecordResponse> findSelectedRecord(Long departmentStoreId, Long departmentStoreFloorId) {
-        List<RecordResponse> recordList = null;
-        try {
-            recordList = recordRepository.findSelectedRecordsByDepartmentStoreIdAndFloor(departmentStoreId, departmentStoreFloorId)
-                    .stream()
-                    .map(record -> new RecordResponse(
-                            record.getRecordId(),
-                            record.getRecordTitle(),
-                            record.getRecordLatitude(),
-                            record.getRecordLongitude(),
-                            record.getRecordPath()
-                    ))
-                    .collect(Collectors.toList());
-            System.out.println(recordList);
-        } catch(Exception e) {
-            System.out.println(e);
-        }
+        List<RecordResponse> recordList = recordRepository.findSelectedRecordsByDepartmentStoreIdAndFloor(departmentStoreId, departmentStoreFloorId)
+                .stream()
+                .map(record -> new RecordResponse(
+                        record.getRecordId(),
+                        record.getRecordTitle(),
+                        record.getRecordLatitude(),
+                        record.getRecordLongitude(),
+                        record.getRecordPath()
+                ))
+                .collect(Collectors.toList());
         return recordList;
 
     }
