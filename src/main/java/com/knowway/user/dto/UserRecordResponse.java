@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 public class UserRecordResponse {
   private Long recordId;
   private String recordUrl;
+  private String recordTitle;
   private Boolean isSelectedByAdmin;
   private String departmentName;
   private String departmentLocationName;
