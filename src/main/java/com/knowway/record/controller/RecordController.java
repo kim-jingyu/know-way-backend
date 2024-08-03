@@ -1,12 +1,16 @@
 package com.knowway.record.controller;
 
+import com.knowway.departmentstore.dto.DepartmentStoreFloorMapResponse;
 import com.knowway.record.dto.RecordRequest;
+import com.knowway.record.dto.RecordResponse;
 import com.knowway.record.service.RecordService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @RequestMapping(value = "/records")
@@ -22,5 +26,13 @@ public class RecordController {
         recordService.addRecord(recordRequest, file);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body("음성 파일이 정상적으로 업로드 되었습니다.");
+    }
+
+    @GetMapping(value = "/{departmentStoreId}/floors")
+    public ResponseEntity<List<RecordResponse>> recordList(
+            @PathVariable("departmentStoreId") Long departmentStoreId,
+            @RequestParam("departmentStoreFloorId") Long departmentStoreFloorId) {
+        return ResponseEntity.ok()
+                .body(recordService.findSelectedRecord(departmentStoreId, departmentStoreFloorId));
     }
 }
