@@ -16,20 +16,19 @@ public class AdminServiceImpl implements AdminService {
 
     private final AdminRepository adminRepository;
 
-
     @Override
     public List<AdminRecordResponse> getRecordsByFloorId(Long departmentStoreFloorId, Long recordArea, Boolean recordIsSelected) {
         return adminRepository.findByDepartmentStoreFloor(departmentStoreFloorId, recordArea, recordIsSelected).stream()
-            .map(record -> AdminRecordResponse.builder()
-                .id(record.getId())
-                .recordTitle(record.getRecordTitle())
-                .recordLatitude(record.getRecordLatitude())
-                .recordLongitude(record.getRecordLongitude())
-                .recordPath(record.getRecordPath())
-                .recordIsSelected(record.getRecordIsSelected())
-                .memberId(record.getMember().getId())
-                .build())
-            .collect(Collectors.toList());
+                .map(record -> AdminRecordResponse.builder()
+                        .id(record.getId())
+                        .recordTitle(record.getRecordTitle())
+                        .recordLatitude(record.getRecordLatitude())
+                        .recordLongitude(record.getRecordLongitude())
+                        .recordPath(record.getRecordPath())
+                        .recordIsSelected(record.getRecordIsSelected())
+                        .memberId(record.getMember().getId())
+                        .build())
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -39,13 +38,15 @@ public class AdminServiceImpl implements AdminService {
                 .orElseThrow(() -> new AdminException("id 값이 올바르지 않습니다."));
 
         Record updatedRecord = Record.builder()
-            .id(record.getId())
-            .member(record.getMember())
-            .departmentStoreFloor(record.getDepartmentStoreFloor())
+                .id(record.getId())
+                .member(record.getMember())
+                .departmentStoreFloor(record.getDepartmentStoreFloor())
+                .departmentStore(record.getDepartmentStore())
                 .recordTitle(record.getRecordTitle())
                 .recordLatitude(record.getRecordLatitude())
                 .recordLongitude(record.getRecordLongitude())
                 .recordPath(record.getRecordPath())
+                .recordArea(record.getRecordArea())
                 .recordIsSelected(!record.getRecordIsSelected())
                 .build();
 
