@@ -14,15 +14,18 @@ import org.springframework.stereotype.Repository;
 public interface RecordRepository extends JpaRepository<Record, Long> {
 
 
-  @Query("SELECT new com.knowway.user.dto.UserRecordDto(" +
-      "r.id, r.recordPath, r.recordTitle,r.recordIsSelected," +
-      "ds.departmentStoreName,ds.departmentStoreBranch,dsf.departmentStoreFloor) " +
-      "FROM Record r " +
-      "JOIN r.departmentStoreFloor dsf " +
-      "JOIN dsf.departmentStore ds " +
-      "WHERE r.member.id = :memberId")
-  Page<UserRecordDto> findUserRecordsByMemberId(@Param("memberId") Long memberId,
-      Pageable pageable);
+@Query("SELECT new com.knowway.user.dto.UserRecordDto(" +
+    "r.id, r.recordPath, r.recordTitle, r.recordIsSelected, " +
+    "ds.departmentStoreName, ds.departmentStoreBranch, dsf.departmentStoreFloor) " +
+    "FROM Record r " +
+    "JOIN r.departmentStoreFloor dsf " +
+    "JOIN dsf.departmentStore ds " +
+    "WHERE r.member.id = :memberId " +
+    "AND (:isSelectedByAdmin IS NULL OR r.recordIsSelected = :isSelectedByAdmin)")
+Page<UserRecordDto> findUserRecordsByMemberIdAndRecordIsSelected(
+    @Param("memberId") Long memberId,
+    @Param("isSelectedByAdmin") Boolean isSelectedByAdmin,
+    Pageable pageable);
 
   Optional<Record> findByMemberIdAndId(Long memberId, Long recordId);
 }

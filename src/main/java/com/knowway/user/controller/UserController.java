@@ -64,9 +64,10 @@ public class UserController<USERID extends Long> {
   public ResponseEntity<List<UserRecordResponse>> getUserRecordHistory(
       @AuthenticationPrincipal USERID userId,
       @RequestParam(defaultValue = "0") int page,
-      @RequestParam(defaultValue = "10") int size) {
+      @RequestParam(defaultValue = "10") int size,
+      @RequestParam(defaultValue = "") Boolean isSelectedByAdmin) {
     return ResponseEntity.ok()
-        .body(userService.getUserRecordHistory(userId, page, size).getContent());
+        .body(userService.getUserRecordHistory(userId,isSelectedByAdmin, page, size).getContent());
   }
 
   @DeleteMapping("/records/{recordId}")
