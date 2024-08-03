@@ -13,6 +13,7 @@ public class AdminRecordResponse {
     private String recordLatitude;
     private String recordLongitude;
     private String recordPath;
+    private Long recordArea;
     private Boolean recordIsSelected;
     private Long memberId;
 }

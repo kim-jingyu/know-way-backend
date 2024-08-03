@@ -16,8 +16,8 @@ public class AdminController {
     private final AdminService adminService;
 
     @GetMapping("/records")
-    public ResponseEntity<List<AdminRecordResponse>> getRecordsByFloorId(@RequestParam Long departmentStoreFloorId) {
-        return ResponseEntity.ok(adminService.getRecordsByFloorId(departmentStoreFloorId));
+    public ResponseEntity<List<AdminRecordResponse>> getRecordsByFloorId(@RequestParam Long departmentStoreFloorId,@RequestParam Long recordArea, @RequestParam Boolean recordIsSelected) {
+        return ResponseEntity.ok(adminService.getRecordsByFloorId(departmentStoreFloorId, recordArea, recordIsSelected));
     }
 
     @PatchMapping("/records/{recordId}")
