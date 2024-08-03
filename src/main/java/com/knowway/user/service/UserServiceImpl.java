@@ -12,13 +12,13 @@ import com.knowway.user.entity.Member;
 import com.knowway.user.exception.UserException;
 import com.knowway.user.mapper.UserMapper;
 import com.knowway.user.repository.MemberRepository;
+import com.knowway.user.vo.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
@@ -53,6 +53,13 @@ public class UserServiceImpl implements UserService {
     Long chatId = memberRepository.getUserChatIdFromUserId(userId)
         .orElseThrow(() -> new UserException("존재하지 않은 유저입니다."));
     return UserChatMemberIdResponse.builder().memberChatId(chatId).build();
+  }
+
+  @Override
+  public Role getRole(Long userId) {
+    Member member = memberRepository.findById(userId)
+        .orElseThrow(() -> new UserException("존재하지 않은 유저입니다."));
+    return member.getRole();
   }
 
 
