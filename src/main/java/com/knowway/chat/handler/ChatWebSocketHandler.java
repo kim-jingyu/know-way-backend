@@ -47,13 +47,13 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
     }
 
     private void sendSessionCount(String departmentStoreId) {
-        int sessionCount = sessionsMap.getOrDefault(departmentStoreId, new CopyOnWriteArrayList<>()).size();
-        System.out.println("sessionCount= " + sessionCount);
-        TextMessage sessionCountMessage = new TextMessage("{\"type\":\"sessionCount\",\"count\":" + sessionCount + "}");
+        int userCount = sessionsMap.getOrDefault(departmentStoreId, new CopyOnWriteArrayList<>()).size();
+        System.out.println("userCount= " + userCount);
+        TextMessage userCountMessage = new TextMessage("{\"type\":\"userCount\",\"count\":" + userCount + "}");
         for (WebSocketSession webSocketSession : sessionsMap.getOrDefault(departmentStoreId, new CopyOnWriteArrayList<>())) {
             if (webSocketSession.isOpen()) {
                 try {
-                    webSocketSession.sendMessage(sessionCountMessage);
+                    webSocketSession.sendMessage(userCountMessage);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
