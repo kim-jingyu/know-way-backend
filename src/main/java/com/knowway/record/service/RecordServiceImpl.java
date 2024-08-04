@@ -1,7 +1,5 @@
 package com.knowway.record.service;
 
-import com.knowway.chat.dto.ChatMessageResponse;
-import com.knowway.departmentstore.dto.DepartmentStoreFloorMapResponse;
 import com.knowway.departmentstore.entity.DepartmentStore;
 import com.knowway.departmentstore.entity.DepartmentStoreFloor;
 import com.knowway.departmentstore.repository.DepartmentStoreFloorRepository;
@@ -18,14 +16,11 @@ import com.knowway.user.exception.UserException;
 import com.knowway.user.repository.MemberRepository;
 import jakarta.transaction.Transactional;
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -70,7 +65,7 @@ public class RecordServiceImpl implements RecordService {
     }
 
     @Transactional
-    public Long addRecord(RecordRequest recordRequest, MultipartFile recordFile) {
+    public Long addRecord(Long memberId, RecordRequest recordRequest, MultipartFile recordFile) {
         String recordUrl = null;
         try {
             recordUrl = s3UploadService.saveFile(recordFile, "record");
@@ -81,7 +76,7 @@ public class RecordServiceImpl implements RecordService {
             recordRequest.getDepartmentStoreFloorId());
 
         DepartmentStore departmentStore = departmentStoreRepository.getById(recordRequest.getDepartmentStoreId());
-        Member member = memberRepository.findById(recordRequest.getMemberId())
+        Member member = memberRepository.findById(memberId)
             .orElseThrow(() -> new UserException("유효하지 않은 아이디입니다."));
 
         double latitude = Double.parseDouble(recordRequest.getRecordLatitude());

@@ -9,9 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
-
 @RequiredArgsConstructor
 @RequestMapping(value = "/chats")
 @RestController
@@ -22,7 +19,7 @@ public class ChatMessageController {
     @GetMapping("/{departmentStoreId}")
     public ResponseEntity<Page<ChatMessageResponse>> messagesList(
             @PathVariable("departmentStoreId") Long departmentStoreId,
-            @RequestParam(value = "page", defaultValue = "0") int page, // defaultValue를 0으로 변경
+            @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "20") int size) {
         return ResponseEntity.ok(chatMessageService.findMessages(departmentStoreId, page, size));
     }
