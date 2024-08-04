@@ -67,7 +67,7 @@ public class DepartmentStoreController {
     }
 
     @GetMapping(value = "/branch")
-    public ResponseEntity<DepartmentStoreResponse> getDepartmentStoreByBranch(@RequestParam(value = "departmentStoreBranch") String departmentStoreBranch) {
+    public ResponseEntity<List<DepartmentStoreResponse>> getDepartmentStoreByBranch(@RequestParam(value = "departmentStoreBranch") String departmentStoreBranch) {
         return ResponseEntity.ok()
                 .body(service.getDepartmentStoreByBranch(departmentStoreBranch));
     }
