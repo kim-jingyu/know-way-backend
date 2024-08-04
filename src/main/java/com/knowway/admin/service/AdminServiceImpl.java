@@ -17,7 +17,7 @@ public class AdminServiceImpl implements AdminService {
     private final AdminRepository adminRepository;
 
     @Override
-    public List<AdminRecordResponse> getRecordsByFloorId(Long departmentStoreFloorId, Long recordArea, Boolean recordIsSelected) {
+    public List<AdminRecordResponse> getRecordsByFloor(Long departmentStoreFloorId, Long recordArea, Boolean recordIsSelected) {
         return adminRepository.findByDepartmentStoreFloor(departmentStoreFloorId, recordArea, recordIsSelected).stream()
                 .map(record -> AdminRecordResponse.builder()
                         .id(record.getId())

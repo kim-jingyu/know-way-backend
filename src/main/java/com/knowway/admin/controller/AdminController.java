@@ -3,7 +3,6 @@ package com.knowway.admin.controller;
 import com.knowway.admin.dto.AdminRecordResponse;
 import com.knowway.admin.service.AdminService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,7 +16,7 @@ public class AdminController {
 
     @GetMapping("/records")
     public ResponseEntity<List<AdminRecordResponse>> getRecordsByFloorId(@RequestParam Long departmentStoreFloorId,@RequestParam Long recordArea, @RequestParam Boolean recordIsSelected) {
-        return ResponseEntity.ok(adminService.getRecordsByFloorId(departmentStoreFloorId, recordArea, recordIsSelected));
+        return ResponseEntity.ok(adminService.getRecordsByFloor(departmentStoreFloorId, recordArea, recordIsSelected));
     }
 
     @PatchMapping("/records/{recordId}")

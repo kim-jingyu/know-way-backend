@@ -70,7 +70,6 @@ public class SecurityConfig {
   @Value("${admin.password}")
   private String adminPassword;
 
-
   public SecurityConfig(
       @Qualifier("redisTemplate") RedisTemplate<String, String> blackListRedisTemplate,
       @Qualifier("refreshRedisTemplate") RedisTemplate<String, String> refreshRedisTemplate,
@@ -119,8 +118,13 @@ public class SecurityConfig {
   }
 
   @Bean("jwtAuthenticationFilter")
-  public JwtAuthenticationFilter jwtAuthenticationFilter() {
-    return new JwtAuthenticationFilter(accessTokenHandler());
+  public JwtAuthenticationFilter<String, String> jwtAuthenticationFilter(
+      AccessTokenHandler<String> accessTokenHandler,
+      @Qualifier("tokenToKeyConverter") TypeConvertor<String, String> tokenToKeyConvertor,
+      @Qualifier("subjectToValueConvertor") TypeConvertor<String, String> subjectToValueConvertor,
+      AccessTokenWithRefreshTokenService<String,String,Long> accessTokenWithRefreshTokenService) {
+    return new JwtAuthenticationFilter<>(accessTokenHandler, accessTokenWithRefreshTokenService,
+        tokenToKeyConvertor, subjectToValueConvertor);
   }
 
   @Primary
@@ -219,7 +223,6 @@ public class SecurityConfig {
       @Qualifier("userIdToValueConverter") TypeConvertor<Long, String> userIdToSubjectConvertor,
       @Qualifier("accessTokenHandler") AccessTokenHandler<String> accessTokenHandler,
       MemberRepository memberRepository,
-      @Qualifier("valueToUserIdConverter") TypeConvertor<String, Long> valueToUserIdConvertor,
       @Qualifier("keyToTokenConverter") TypeConvertor<String, String> keyToTokenConverter,
       @Qualifier("userIdToValueConverter") TypeConvertor<Long, String> userIdToValueConvertor,
       @Qualifier("refreshTokenHandler") RefreshTokenHandler<String, String> refreshTokenHandler,
@@ -230,7 +233,6 @@ public class SecurityConfig {
         userIdToSubjectConvertor,
         accessTokenHandler,
         memberRepository,
-        valueToUserIdConvertor,
         keyToTokenConverter,
         userIdToValueConvertor,
         refreshTokenHandler,
@@ -260,6 +262,12 @@ public class SecurityConfig {
   @Qualifier("valueToUserIdConverter")
   public TypeConvertor<String, Long> valueToUserIdConverter() {
     return Long::valueOf;
+  }
+
+  @Bean
+  @Qualifier("subjectToValueConvertor")
+  public TypeConvertor<String, String> subjectToValueConvertor() {
+    return String::valueOf;
   }
 
   @Bean

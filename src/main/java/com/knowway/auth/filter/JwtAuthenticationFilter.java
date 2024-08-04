@@ -3,7 +3,8 @@ package com.knowway.auth.filter;
 
 import com.knowway.auth.exception.AuthException;
 import com.knowway.auth.handler.AccessTokenHandler;
-import com.knowway.auth.util.JsonBinderUtil;
+import com.knowway.auth.service.AccessTokenWithRefreshTokenService;
+import com.knowway.auth.util.TypeConvertor;
 import com.knowway.auth.vo.AuthRequestHeaderPrefix;
 import com.knowway.auth.vo.ExtractHeaderKeyByRequest;
 import com.knowway.user.vo.Role;
@@ -22,20 +23,23 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 /**
- * This is the JwtAuthenticationFilter, which can be used when there is token at header or not
- * For managing the authorization in one place this filter isn't set shouldNotFilter
- * @see com.knowway.auth.config.SecurityConfig
- * When user is authenticated set the user is authenticated
- * @see JwtAuthenticationFilter#setSecurityContext(String)
+ * This is the JwtAuthenticationFilter, which can be used when there is token at header or not For
+ * managing the authorization in one place this filter isn't set shouldNotFilter
+ *
+ * @see com.knowway.auth.config.SecurityConfig When user is authenticated set the user is
+ * authenticated
  */
 @AllArgsConstructor
-public class JwtAuthenticationFilter extends OncePerRequestFilter {
+public class JwtAuthenticationFilter<K, V> extends OncePerRequestFilter {
 
   /**
-   * The Raw type with AccessTokenHandler is fine, just because the Generic Type is only used
-   * when persisting the token, otherwise this filter just validate the token, So won't be problem
+   * The Raw type with AccessTokenHandler is fine, just because the Generic Type is only used when
+   * persisting the token, otherwise this filter just validate the token, So won't be problem
    */
-  private final AccessTokenHandler accessTokenHandler;
+  private final AccessTokenHandler<K> accessTokenHandler;
+  private final AccessTokenWithRefreshTokenService<K, V, Long> accessTokenWithRefreshTokenService;
+  private final TypeConvertor<String, K> tokenToKeyConvertor;
+  private final TypeConvertor<String, V> subjectToValueConvertor;
 
   @Override
   public void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
@@ -43,24 +47,31 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     String header = request.getHeader(AuthRequestHeaderPrefix.AUTHORIZATION_HEADER);
 
-    if(header!=null){
-    try {
-      String token = ExtractHeaderKeyByRequest.extractKey(request, AuthRequestHeaderPrefix.AUTHORIZATION_HEADER).substring(7);
-      if (!accessTokenHandler.isValidToken(token)) {
+    if (header != null) {
+      try {
+        String token = ExtractHeaderKeyByRequest.extractKey(request,
+            AuthRequestHeaderPrefix.AUTHORIZATION_HEADER).substring(7);
+        if (!accessTokenHandler.isValidToken(token)) {
+          response.setStatus(401);
+        } else {
+          Role role = accessTokenHandler.getRole(token);
+          setSecurityContext(accessTokenHandler.getSubject(token), role);
+          filterChain.doFilter(request, response);
+        }
+      } catch (ExpiredJwtException expiredJwtException) {
+        String oldToken = ExtractHeaderKeyByRequest.extractKey(request,
+            AuthRequestHeaderPrefix.AUTHORIZATION_HEADER).substring(7);
+        String newToken = accessTokenWithRefreshTokenService.reAuthentication(
+            tokenToKeyConvertor.convert(oldToken),
+            subjectToValueConvertor.convert(expiredJwtException.getClaims().getSubject()));
+        response.addHeader(AuthRequestHeaderPrefix.AUTHORIZATION_HEADER,
+            AuthRequestHeaderPrefix.TOKEN_PREFIX + newToken);
+      } catch (AuthException | MalformedJwtException | StringIndexOutOfBoundsException e) {
         response.setStatus(401);
-      } else {
-        Role role = accessTokenHandler.getRole(token);
-        setSecurityContext(accessTokenHandler.getSubject(token), role);
-        filterChain.doFilter(request, response);
       }
-    } catch (ExpiredJwtException expiredJwtException) {
-      JsonBinderUtil.setResponseWithJson(response, 401, expiredJwtException.getClaims());
-      filterChain.doFilter(request,response);
-    } catch (AuthException | MalformedJwtException | StringIndexOutOfBoundsException e) {
-      response.setStatus(401);
+    } else {
+      filterChain.doFilter(request, response);
     }
-    }
-    else filterChain.doFilter(request,response);
 
   }
 
