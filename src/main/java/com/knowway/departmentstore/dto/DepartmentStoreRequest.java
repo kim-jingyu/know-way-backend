@@ -9,6 +9,6 @@ public class DepartmentStoreRequest {
     private String departmentStoreName;
     private String departmentStoreBranch;
     private Double departmentStoreLatitude;
-    private Double departmentStoreLongtitude;
+    private Double departmentStoreLongitude;
     private List<DepartmentStoreFloorRequest> floorData;
 }
