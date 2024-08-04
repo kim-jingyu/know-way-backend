@@ -5,7 +5,6 @@ import com.knowway.departmentstore.dto.DepartmentStoreRequest;
 import com.knowway.departmentstore.dto.DepartmentStoreResponse;
 import com.knowway.departmentstore.entity.DepartmentStore;
 import com.knowway.departmentstore.entity.DepartmentStoreFloor;
-import com.knowway.departmentstore.exception.DepartmentStoreNotFoundException;
 import com.knowway.departmentstore.repository.DepartmentStoreFloorRepository;
 import com.knowway.departmentstore.repository.DepartmentStoreRepository;
 import com.knowway.s3.exception.S3Exception;
@@ -88,9 +87,10 @@ public class DepartmentStoreServiceImpl implements DepartmentStoreService {
     }
 
     @Override
-    public DepartmentStoreResponse getDepartmentStoreByBranch(String departmentStoreBranch) {
-        return DepartmentStoreResponse.of(departmentStoreRepository.findByDepartmentStoreBranch(departmentStoreBranch)
-                .orElseThrow(DepartmentStoreNotFoundException::new));
+    public List<DepartmentStoreResponse> getDepartmentStoreByBranch(String departmentStoreBranch) {
+        return departmentStoreRepository.findByDepartmentStoreBranchContainingIgnoreCase(departmentStoreBranch).stream()
+                .map(DepartmentStoreResponse::of)
+                .toList();
     }
 
     @Transactional

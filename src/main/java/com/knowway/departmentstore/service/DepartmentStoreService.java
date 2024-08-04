@@ -13,6 +13,6 @@ public interface DepartmentStoreService {
     List<DepartmentStoreResponse> getDepartmentStoreListByLocation(Double latitude, Double longitude);
     DepartmentStoreFloorMapResponse getDepartmentStoreFloorMap(Long deptId, String floor);
     List<DepartmentStoreFloorMapResponse> getDepartmentStoreFloorList(Long departmentStoreId);
-    DepartmentStoreResponse getDepartmentStoreByBranch(String departmentStoreBranch);
+    List<DepartmentStoreResponse> getDepartmentStoreByBranch(String departmentStoreBranch);
     void removeDepartmentStore(Long departmentStoreId);
 }
