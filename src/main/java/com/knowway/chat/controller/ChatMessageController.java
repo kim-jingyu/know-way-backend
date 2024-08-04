@@ -2,7 +2,7 @@ package com.knowway.chat.controller;
 
 import com.knowway.chat.dto.ChatMessageRequest;
 import com.knowway.chat.dto.ChatMessageResponse;
-import com.knowway.chat.entity.ChatMessage;
+import org.springframework.data.domain.Page;
 import com.knowway.chat.service.ChatMessageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
+
 
 @RequiredArgsConstructor
 @RequestMapping(value = "/chats")
@@ -20,8 +20,11 @@ public class ChatMessageController {
     private final ChatMessageService chatMessageService;
 
     @GetMapping("/{departmentStoreId}")
-    public ResponseEntity<List<ChatMessageResponse>> messagesList(@PathVariable("departmentStoreId") Long departmentStoreId) {
-        return ResponseEntity.ok(chatMessageService.findMessages(departmentStoreId));
+    public ResponseEntity<Page<ChatMessageResponse>> messagesList(
+            @PathVariable("departmentStoreId") Long departmentStoreId,
+            @RequestParam(value = "page", defaultValue = "0") int page, // defaultValue를 0으로 변경
+            @RequestParam(value = "size", defaultValue = "20") int size) {
+        return ResponseEntity.ok(chatMessageService.findMessages(departmentStoreId, page, size));
     }
 
     @PostMapping
