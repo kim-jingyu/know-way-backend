@@ -67,6 +67,7 @@ public class ChatMessageServiceImpl implements ChatMessageService {
     }
 
 
+    @Transactional
     @Override
     @Scheduled(cron = "0 0 0 * * ?") // 매일 자정에 실행
     public void deleteOldMessages() {
