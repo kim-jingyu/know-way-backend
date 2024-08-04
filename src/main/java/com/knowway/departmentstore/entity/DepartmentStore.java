@@ -28,7 +28,7 @@ public class DepartmentStore extends BaseEntity {
     @Column(nullable = false)
     private Double departmentStoreLatitude;
     @Column(nullable = false)
-    private Double departmentStoreLongtitude;
+    private Double departmentStoreLongitude;
 
     @Builder.Default
     @OneToMany(mappedBy = "departmentStore", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -43,7 +43,7 @@ public class DepartmentStore extends BaseEntity {
                 .departmentStoreName(request.getDepartmentStoreName())
                 .departmentStoreBranch(request.getDepartmentStoreBranch())
                 .departmentStoreLatitude(request.getDepartmentStoreLatitude())
-                .departmentStoreLongtitude(request.getDepartmentStoreLongtitude())
+                .departmentStoreLongitude(request.getDepartmentStoreLongitude())
                 .build();
         for (DepartmentStoreFloor departmentStoreFloor : departmentStoreFloorList) {
             departmentStoreFloor.setDepartmentStore(departmentStore);

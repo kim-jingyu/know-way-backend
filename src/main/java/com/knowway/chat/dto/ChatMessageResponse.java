@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Builder
 @Getter
 public class ChatMessageResponse {
-    private Long memberChatId;
+    private Long chatMessageId;
     private Long messageId;
     private LocalDateTime createdAt;
     private String messageNickname;

@@ -58,10 +58,10 @@ public class DepartmentStoreServiceImpl implements DepartmentStoreService {
     }
 
     @Override
-    public List<DepartmentStoreResponse> getDepartmentStoreListByLocation(Double latitude, Double longtitude) {
+    public List<DepartmentStoreResponse> getDepartmentStoreListByLocation(Double latitude, Double longitude) {
         List<StoreDistance> nearByStores = new ArrayList<>();
         for (DepartmentStore departmentStore : departmentStoreRepository.findAll()) {
-            double distance = calculateDistance(latitude, longtitude, departmentStore.getDepartmentStoreLatitude(), departmentStore.getDepartmentStoreLongtitude());
+            double distance = calculateDistance(latitude, longitude, departmentStore.getDepartmentStoreLatitude(), departmentStore.getDepartmentStoreLongitude());
             if (distance <= DISTANCE) {
                 nearByStores.add(StoreDistance.builder()
                         .distance(distance)
@@ -103,11 +103,11 @@ public class DepartmentStoreServiceImpl implements DepartmentStoreService {
     private record StoreDistance(double distance, DepartmentStoreResponse response) {
     }
 
-    private double calculateDistance(double latitude1, double longtitude1, double latitude2, double longtitude2) {
+    private double calculateDistance(double latitude1, double longitude1, double latitude2, double longitude2) {
         double la1Rad = Math.toRadians(latitude1);
-        double long1Rad = Math.toRadians(longtitude1);
+        double long1Rad = Math.toRadians(longitude1);
         double la2Rad = Math.toRadians(latitude2);
-        double long2Rad = Math.toRadians(longtitude2);
+        double long2Rad = Math.toRadians(longitude2);
 
         double latDiff = la2Rad - la1Rad;
         double longDiff = long2Rad - long1Rad;
