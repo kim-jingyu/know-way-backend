@@ -8,6 +8,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 public interface RecordService {
-    Long addRecord(RecordRequest recordRequest, MultipartFile recordFile);
+    Long addRecord(Long memberId, RecordRequest recordRequest, MultipartFile recordFile);
     List<RecordResponse> findSelectedRecord(Long departmentStoreId, Long departmentStoreFloorId);
 }

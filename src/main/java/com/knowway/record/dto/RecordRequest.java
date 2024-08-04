@@ -7,7 +7,6 @@ import lombok.*;
 @Getter
 @Builder
 public class RecordRequest {
-    private Long memberId;
     private Long departmentStoreFloorId;
     private Long departmentStoreId;
     private String recordTitle;
