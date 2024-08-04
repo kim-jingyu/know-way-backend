@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -67,6 +68,7 @@ public class ChatMessageServiceImpl implements ChatMessageService {
     }
 
 
+    @Transactional
     @Override
     @Scheduled(cron = "0 0 0 * * ?") // 매일 자정에 실행
     public void deleteOldMessages() {
