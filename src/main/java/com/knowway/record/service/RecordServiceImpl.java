@@ -7,7 +7,8 @@ import com.knowway.departmentstore.repository.DepartmentStoreRepository;
 import com.knowway.record.dto.RecordRequest;
 import com.knowway.record.dto.RecordResponse;
 import com.knowway.record.entity.Record;
-import com.knowway.record.exception.RecordException;
+import com.knowway.record.exception.CurrentRecordLocationNotValidException;
+import com.knowway.record.exception.RecordNotFoundException;
 import com.knowway.record.repository.RecordRepository;
 import com.knowway.s3.exception.S3Exception;
 import com.knowway.s3.service.S3UploadService;
@@ -81,7 +82,8 @@ public class RecordServiceImpl implements RecordService {
 
         double latitude = Double.parseDouble(recordRequest.getRecordLatitude());
         double longitude = Double.parseDouble(recordRequest.getRecordLongitude());
-        Long area = getArea(latitude, longitude).orElseThrow(() -> new RecordException("현재 위치가 백화점 내에 있지 않습니다. 다시 시도해주세요."));
+        Long area = getArea(latitude, longitude).orElseThrow(
+            CurrentRecordLocationNotValidException::new);
 
         Record record = Record.builder()
             .member(member)
