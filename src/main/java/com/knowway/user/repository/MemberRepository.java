@@ -26,7 +26,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
   @Query("SELECT m.chatMessageId " +
       "FROM Member m "+
       "wHERE m.id =:userId ")
-  Optional<Long> getUserChatIdFromUserId(@Param("id") Long userId);
+  Optional<Long> getUserChatIdFromUserId(Long userId);
 
 
 }
