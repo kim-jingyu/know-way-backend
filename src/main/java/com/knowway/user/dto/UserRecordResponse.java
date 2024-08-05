@@ -16,5 +16,5 @@ public class UserRecordResponse {
   private Boolean isSelectedByAdmin;
   private String departmentName;
   private String departmentLocationName;
-  private Integer floor;
+  private String floor;
 }

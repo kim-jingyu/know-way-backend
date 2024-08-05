@@ -1,6 +1,8 @@
 package com.knowway.common.exception;
 
 import com.knowway.auth.exception.AuthException;
+import com.knowway.record.exception.RecordAlreadySelectedByAdminException;
+import com.knowway.record.exception.RecordNotFoundException;
 import com.knowway.user.exception.UserException;
 import io.jsonwebtoken.JwtException;
 import java.util.Collections;
@@ -50,6 +52,22 @@ public class GlobalExceptionHandler {
   @ExceptionHandler(com.knowway.user.exception.UserException.class)
   public ResponseEntity<Map<String, List<String>>> userException(
       com.knowway.user.exception.UserException ex) {
+    List<String> errors = Collections.singletonList(ex.getMessage());
+    return new ResponseEntity<>(getErrorsMap(errors), new HttpHeaders(), HttpStatus.BAD_REQUEST);
+  }
+
+
+    @ExceptionHandler(RecordNotFoundException.class)
+  public ResponseEntity<Map<String, List<String>>> recordNotFoundException(
+      RecordNotFoundException ex) {
+    List<String> errors = Collections.singletonList(ex.getMessage());
+    return new ResponseEntity<>(getErrorsMap(errors), new HttpHeaders(), HttpStatus.NOT_FOUND);
+  }
+
+
+    @ExceptionHandler(RecordAlreadySelectedByAdminException.class)
+  public ResponseEntity<Map<String, List<String>>> recordAlreadySelectedException(
+      RecordAlreadySelectedByAdminException ex) {
     List<String> errors = Collections.singletonList(ex.getMessage());
     return new ResponseEntity<>(getErrorsMap(errors), new HttpHeaders(), HttpStatus.BAD_REQUEST);
   }

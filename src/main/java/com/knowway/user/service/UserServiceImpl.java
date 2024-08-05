@@ -2,6 +2,8 @@ package com.knowway.user.service;
 
 import com.knowway.auth.dto.UserChatMemberIdResponse;
 import com.knowway.record.entity.Record;
+import com.knowway.record.exception.RecordAlreadySelectedByAdminException;
+import com.knowway.record.exception.RecordNotFoundException;
 import com.knowway.record.repository.RecordRepository;
 import com.knowway.user.dto.MemberProfileDto;
 import com.knowway.user.dto.UserProfileResponse;
@@ -69,7 +71,10 @@ public class UserServiceImpl implements UserService {
 
   public void deleteRecord(Long userId, Long recordId) {
     Record record = recordRepository.findByMemberIdAndId(userId, recordId)
-        .orElseThrow(() -> new UserException("해당 유저에 속한 레코드가 아닙니다."));
+        .orElseThrow(RecordNotFoundException::new);
+    if (Boolean.TRUE.equals(record.getRecordIsSelected())) {
+      throw new RecordAlreadySelectedByAdminException();
+    }
     recordRepository.delete(record);
   }
 

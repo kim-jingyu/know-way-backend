@@ -47,9 +47,8 @@ public class UserController<USERID extends Long> {
   }
 
   @GetMapping("/chat-id")
-  public ResponseEntity<UserChatMemberIdResponse> getUserChatId(@AuthenticationPrincipal USERID userId) {
+  public ResponseEntity<UserChatMemberIdResponse> getUserChatId(@AuthenticationPrincipal Long userId) {
     return ResponseEntity.ok().body(userService.getUserChatMemberId(userId));
-
   }
 
 
@@ -71,10 +70,10 @@ public class UserController<USERID extends Long> {
   }
 
   @DeleteMapping("/records/{recordId}")
-  public ResponseEntity<String> deleteUserRecordId(
+  public ResponseEntity<Void> deleteUserRecordId(
       @AuthenticationPrincipal USERID userId,@PathVariable Long recordId) {
     userService.deleteRecord(userId,recordId);
-    return ResponseEntity.ok().body("레코드 삭제 완료");
+    return ResponseEntity.ok().build();
   }
 
 }
