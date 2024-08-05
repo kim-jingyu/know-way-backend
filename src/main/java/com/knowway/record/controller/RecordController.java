@@ -7,6 +7,7 @@ import com.knowway.record.service.RecordService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,8 +23,10 @@ public class RecordController {
     @PostMapping(consumes = {"multipart/form-data"})
     public ResponseEntity<String> recordAdd(
             @RequestPart("file") MultipartFile file,
-            @RequestPart("record") RecordRequest recordRequest) {
-        recordService.addRecord(recordRequest, file);
+            @RequestPart("record") RecordRequest recordRequest,
+            @AuthenticationPrincipal Long memberId
+    ) {
+        recordService.addRecord(memberId, recordRequest, file);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body("음성 파일이 정상적으로 업로드 되었습니다.");
     }
@@ -31,7 +34,7 @@ public class RecordController {
     @GetMapping(value = "/{departmentStoreId}/floors")
     public ResponseEntity<List<RecordResponse>> recordList(
             @PathVariable("departmentStoreId") Long departmentStoreId,
-            @RequestParam("departmentStoreFloorId") Long departmentStoreFloorId) {
+            @RequestParam("floor") Long departmentStoreFloorId) {
         return ResponseEntity.ok()
                 .body(recordService.findSelectedRecord(departmentStoreId, departmentStoreFloorId));
     }

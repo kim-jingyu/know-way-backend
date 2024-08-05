@@ -18,15 +18,11 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public List<AdminRecordResponse> getRecordsByFloor(Long departmentStoreFloorId, Long recordArea, Boolean recordIsSelected) {
-        return adminRepository.findByDepartmentStoreFloor(departmentStoreFloorId, recordArea, recordIsSelected).stream()
+        return adminRepository.findAdminRecordsByDepartmentStoreFloor(departmentStoreFloorId, recordArea, recordIsSelected).stream()
                 .map(record -> AdminRecordResponse.builder()
-                        .id(record.getId())
+                        .recordId(record.getRecordId())
                         .recordTitle(record.getRecordTitle())
-                        .recordLatitude(record.getRecordLatitude())
-                        .recordLongitude(record.getRecordLongitude())
                         .recordPath(record.getRecordPath())
-                        .recordIsSelected(record.getRecordIsSelected())
-                        .memberId(record.getMember().getId())
                         .build())
                 .collect(Collectors.toList());
     }
