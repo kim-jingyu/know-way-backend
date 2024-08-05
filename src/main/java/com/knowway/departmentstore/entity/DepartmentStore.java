@@ -34,9 +34,10 @@ public class DepartmentStore extends BaseEntity {
     @OneToMany(mappedBy = "departmentStore", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DepartmentStoreFloor> departmentStoreFloorList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "departmentStore")
+    @Builder.Default
+    @OneToMany(mappedBy = "departmentStore", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
-    private List<ChatMessage> chatMessageList;
+    private List<ChatMessage> chatMessageList = new ArrayList<>();
 
     public void addDeptFloor(DepartmentStoreFloor departmentStoreFloor) {
         departmentStoreFloorList.add(departmentStoreFloor);
