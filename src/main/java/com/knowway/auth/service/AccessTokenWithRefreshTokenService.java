@@ -1,5 +1,6 @@
 package com.knowway.auth.service;
 
+import com.knowway.auth.exception.AuthException;
 import com.knowway.auth.handler.AccessTokenHandler;
 import com.knowway.auth.handler.RefreshTokenHandler;
 import com.knowway.auth.util.TypeConvertor;
@@ -7,8 +8,6 @@ import com.knowway.auth.vo.AuthRequestHeaderPrefix;
 import com.knowway.auth.vo.ClaimsKey;
 import com.knowway.auth.vo.RequestHeaderNaming;
 import com.knowway.user.repository.MemberRepository;
-import com.knowway.user.vo.Role;
-import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.Map;
@@ -72,6 +71,7 @@ public class AccessTokenWithRefreshTokenService<K, V, USERID extends Long> exten
         Map.of(ClaimsKey.ROLE_CLAIMS_KEY, claims.get(ClaimsKey.ROLE_CLAIMS_KEY)));
     K newKey = tokenToKeyConvertor.convert(accessToken);
 
+    if(!refreshTokenHandler.isValid(oldKey)) throw new AuthException("Expired");
     refreshTokenHandler.invalidate(oldKey);
     refreshTokenHandler.persistToken(newKey, value);
 

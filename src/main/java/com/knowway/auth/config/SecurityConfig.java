@@ -108,8 +108,12 @@ public class SecurityConfig {
           request.requestMatchers(HttpMethod.POST, "/login").permitAll();
           request.requestMatchers(HttpMethod.POST, "/users").permitAll();
           request.requestMatchers(HttpMethod.POST, "/users/emails").permitAll();
-          request.requestMatchers("/admin**").hasAuthority("ROLE_ADMIN");
-          request.anyRequest().permitAll();
+          request.requestMatchers("/admin/**").hasAuthority("ROLE_ADMIN");
+          request.requestMatchers(HttpMethod.POST,"/depts").hasAuthority("ROLE_ADMIN");
+          request.requestMatchers(HttpMethod.DELETE,"/depts/**").hasAuthority("ROLE_ADMIN");
+          request.requestMatchers("/admin/**").hasAuthority("ROLE_ADMIN");
+
+          request.anyRequest().authenticated();
         })
         .addFilterBefore(userAuthenticationFilter, CorsFilter.class)
         .addFilterAfter(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
