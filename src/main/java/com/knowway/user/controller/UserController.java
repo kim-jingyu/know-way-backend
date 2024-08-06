@@ -30,19 +30,18 @@ public class UserController<USERID extends Long> {
   private final UserService userService;
   private final UserDuplicationChecker duplicationChecker;
 
-
   @PostMapping("/emails")
-  public ResponseEntity<Boolean> emailDuplicationCheck(
+  public ResponseEntity<Void> emailDuplicationCheck(
       @RequestBody @Valid EmailDuplicationCheckRequset emailDuplicationCheckRequset) {
     duplicationChecker.emailDuplicationChecker(emailDuplicationCheckRequset.getEmail());
-    return ResponseEntity.ok().body(Boolean.TRUE);
+    return ResponseEntity.ok().build();
   }
 
   @PostMapping
-  public ResponseEntity<Boolean> signUp(
+  public ResponseEntity<Void> signUp(
       @RequestBody @Valid UserSignUpRequest signUpDto) {
     userService.signUp(signUpDto);
-    return ResponseEntity.ok().body(Boolean.TRUE);
+    return ResponseEntity.ok().build();
 
   }
 
@@ -50,7 +49,6 @@ public class UserController<USERID extends Long> {
   public ResponseEntity<UserChatMemberIdResponse> getUserChatId(@AuthenticationPrincipal Long userId) {
     return ResponseEntity.ok().body(userService.getUserChatMemberId(userId));
   }
-
 
   @GetMapping
   public ResponseEntity<UserProfileResponse> getProfileInfo(
