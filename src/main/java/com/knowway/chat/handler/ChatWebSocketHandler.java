@@ -1,14 +1,13 @@
 package com.knowway.chat.handler;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
-
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 @Component
 public class ChatWebSocketHandler extends TextWebSocketHandler {
@@ -48,7 +47,6 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
 
     private void sendSessionCount(String departmentStoreId) {
         int userCount = sessionsMap.getOrDefault(departmentStoreId, new CopyOnWriteArrayList<>()).size();
-        System.out.println("userCount= " + userCount);
         TextMessage userCountMessage = new TextMessage("{\"type\":\"userCount\",\"count\":" + userCount + "}");
         for (WebSocketSession webSocketSession : sessionsMap.getOrDefault(departmentStoreId, new CopyOnWriteArrayList<>())) {
             if (webSocketSession.isOpen()) {

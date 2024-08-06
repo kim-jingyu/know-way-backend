@@ -1,7 +1,6 @@
 package com.knowway.auth.handler;
 
 
-import com.knowway.auth.exception.AuthException;
 import com.knowway.auth.service.RestfulAuthService;
 import com.knowway.auth.vo.RequestHeaderNaming;
 import jakarta.servlet.FilterChain;

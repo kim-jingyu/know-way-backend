@@ -1,10 +1,7 @@
 package com.knowway.user.exception;
 
-public class UserException extends RuntimeException{
-  public UserException(String message) {
-    super(message);
-  }
-  public UserException(String message, Throwable cause) {
-    super(message, cause);
-  }
-}
+ abstract class UserException extends RuntimeException {
+   protected UserException(String message) {
+     super(message);
+   }
+ }

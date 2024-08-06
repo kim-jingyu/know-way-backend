@@ -11,7 +11,7 @@ import com.knowway.user.dto.UserRecordDto;
 import com.knowway.user.dto.UserRecordResponse;
 import com.knowway.user.dto.UserSignUpRequest;
 import com.knowway.user.entity.Member;
-import com.knowway.user.exception.UserException;
+import com.knowway.user.exception.UserNotFoundException;
 import com.knowway.user.mapper.UserMapper;
 import com.knowway.user.repository.MemberRepository;
 import com.knowway.user.vo.Role;
@@ -57,25 +57,25 @@ public class UserServiceImpl implements UserService {
   @Override
   public UserChatMemberIdResponse getUserChatMemberId(Long userId) {
     Long chatId = memberRepository.getUserChatIdFromUserId(userId)
-        .orElseThrow(() -> new UserException("존재하지 않은 유저입니다."));
+        .orElseThrow(UserNotFoundException::new);
     return UserChatMemberIdResponse.builder().memberChatId(chatId).build();
   }
 
   @Override
   public Role getRole(Long userId) {
     Member member = memberRepository.findById(userId)
-        .orElseThrow(() -> new UserException("존재하지 않은 유저입니다."));
+        .orElseThrow(UserNotFoundException::new);
     return member.getRole();
   }
 
 
   public void deleteRecord(Long userId, Long recordId) {
-    Record record = recordRepository.findByMemberIdAndId(userId, recordId)
+    Record userRecord = recordRepository.findByMemberIdAndId(userId, recordId)
         .orElseThrow(RecordNotFoundException::new);
-    if (Boolean.TRUE.equals(record.getRecordIsSelected())) {
+    if (Boolean.TRUE.equals(userRecord.getRecordIsSelected())) {
       throw new RecordAlreadySelectedByAdminException();
     }
-    recordRepository.delete(record);
+    recordRepository.delete(userRecord);
   }
 
 }

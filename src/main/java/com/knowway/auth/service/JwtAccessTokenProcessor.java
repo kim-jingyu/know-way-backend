@@ -13,8 +13,8 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class JwtAccessTokenProcessor {
 
-  public String accessKey;
-  public long accessKeyLifeTime;
+  private String accessKey;
+  private long accessKeyLifeTime;
   private AccessTokenInvalidationStrategy<String> accessTokenInvalidationStrategy;
 
 

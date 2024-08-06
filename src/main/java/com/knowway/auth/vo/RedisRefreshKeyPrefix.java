@@ -6,6 +6,6 @@ public class RedisRefreshKeyPrefix {
 
   }
 
-  public static String REDIS_REFRESH_KEY_PREFIX ="redis_refresh: ";
+  public static final String REDIS_REFRESH_KEY_PREFIX ="redis_refresh: ";
 
 }

@@ -8,19 +8,17 @@ import com.knowway.record.dto.RecordRequest;
 import com.knowway.record.dto.RecordResponse;
 import com.knowway.record.entity.Record;
 import com.knowway.record.exception.CurrentRecordLocationNotValidException;
-import com.knowway.record.exception.RecordNotFoundException;
 import com.knowway.record.repository.RecordRepository;
 import com.knowway.s3.exception.S3Exception;
 import com.knowway.s3.service.S3UploadService;
 import com.knowway.user.entity.Member;
-import com.knowway.user.exception.UserException;
+import com.knowway.user.exception.UserNotFoundException;
 import com.knowway.user.repository.MemberRepository;
 import jakarta.transaction.Transactional;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -78,7 +76,7 @@ public class RecordServiceImpl implements RecordService {
 
         DepartmentStore departmentStore = departmentStoreRepository.getById(recordRequest.getDepartmentStoreId());
         Member member = memberRepository.findById(memberId)
-            .orElseThrow(() -> new UserException("유효하지 않은 아이디입니다."));
+            .orElseThrow(UserNotFoundException::new);
 
         double latitude = Double.parseDouble(recordRequest.getRecordLatitude());
         double longitude = Double.parseDouble(recordRequest.getRecordLongitude());
