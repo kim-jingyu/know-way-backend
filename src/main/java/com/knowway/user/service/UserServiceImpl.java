@@ -72,7 +72,7 @@ public class UserServiceImpl implements UserService {
   public void deleteRecord(Long userId, Long recordId) {
     Record userRecord = recordRepository.findByMemberIdAndId(userId, recordId)
         .orElseThrow(RecordNotFoundException::new);
-    if (Boolean.TRUE.equals(record.getRecordIsSelected())) {
+    if (Boolean.TRUE.equals(userRecord.getRecordIsSelected())) {
       throw new RecordAlreadySelectedByAdminException();
     }
     recordRepository.delete(userRecord);
