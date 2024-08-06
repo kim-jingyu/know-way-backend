@@ -8,6 +8,7 @@ import com.knowway.auth.vo.ClaimsKey;
 import com.knowway.auth.vo.RequestHeaderNaming;
 import com.knowway.user.repository.MemberRepository;
 import com.knowway.user.vo.Role;
+import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.Map;
@@ -65,12 +66,10 @@ public class AccessTokenWithRefreshTokenService<K, V, USERID extends Long> exten
     super.logout(request, response);
   }
 
-  public String reAuthentication(K oldKey, V value) {
-
-    Role role = getRole();
+  public String reAuthentication(K oldKey, V value, Map<String,Object> claims) {
 
     String accessToken = valueAccessTokenHandler.createToken(value,
-        Map.of(ClaimsKey.ROLE_CLAIMS_KEY, role));
+        Map.of(ClaimsKey.ROLE_CLAIMS_KEY, claims.get(ClaimsKey.ROLE_CLAIMS_KEY)));
     K newKey = tokenToKeyConvertor.convert(accessToken);
 
     refreshTokenHandler.invalidate(oldKey);

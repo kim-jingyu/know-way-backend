@@ -63,7 +63,8 @@ public class JwtAuthenticationFilter<K, V> extends OncePerRequestFilter {
             AuthRequestHeaderPrefix.AUTHORIZATION_HEADER).substring(7);
         String newToken = accessTokenWithRefreshTokenService.reAuthentication(
             tokenToKeyConvertor.convert(oldToken),
-            subjectToValueConvertor.convert(expiredJwtException.getClaims().getSubject()));
+            subjectToValueConvertor.convert(expiredJwtException.getClaims().getSubject()),
+            expiredJwtException.getClaims());
         response.addHeader(AuthRequestHeaderPrefix.AUTHORIZATION_HEADER,
             AuthRequestHeaderPrefix.TOKEN_PREFIX + newToken);
       } catch (AuthException | MalformedJwtException | StringIndexOutOfBoundsException e) {
