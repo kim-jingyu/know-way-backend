@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import jdk.jshell.spi.ExecutionControl.UserException;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -66,9 +67,9 @@ public class DepartmentStoreServiceImpl implements DepartmentStoreService {
             double distance = calculateDistance(latitude, longitude, departmentStore.getDepartmentStoreLatitude(), departmentStore.getDepartmentStoreLongitude());
             if (distance <= DISTANCE) {
                 nearByStores.add(StoreDistance.builder()
-                        .distance(distance)
-                        .response(DepartmentStoreResponse.of(departmentStore))
-                        .build());
+                    .distance(distance)
+                    .response(DepartmentStoreResponse.of(departmentStore))
+                    .build());
             }
         }
         nearByStores.sort(Comparator.comparingDouble(StoreDistance::distance));
