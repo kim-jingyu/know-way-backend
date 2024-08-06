@@ -1,8 +1,6 @@
 package com.knowway.user.aop;
 
 import com.knowway.user.annotation.InjectSequenceValue;
-import com.knowway.user.entity.Member;
-import com.knowway.user.repository.MemberRepository;
 import jakarta.persistence.Entity;
 import java.lang.reflect.Field;
 import java.util.Arrays;
@@ -12,7 +10,6 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.support.rowset.SqlRowSet;
 
 @RequiredArgsConstructor
 @Aspect

@@ -19,7 +19,7 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public List<AdminRecordResponse> getRecordsByFloor(Long departmentStoreFloorId, Long recordArea, Boolean recordIsSelected) {
         return adminRepository.findAdminRecordsByDepartmentStoreFloor(departmentStoreFloorId, recordArea, recordIsSelected).stream()
-                .map(record -> AdminRecordResponse.builder()
+                .map((record) -> AdminRecordResponse.builder()
                         .recordId(record.getRecordId())
                         .recordTitle(record.getRecordTitle())
                         .recordPath(record.getRecordPath())

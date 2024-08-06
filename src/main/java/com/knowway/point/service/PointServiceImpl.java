@@ -4,7 +4,6 @@ import com.knowway.point.dto.PointRequest;
 import com.knowway.point.entity.Point;
 import com.knowway.point.exception.PointException;
 import com.knowway.point.repository.PointRepository;
-import com.knowway.point.service.PointService;
 import com.knowway.record.entity.Record;
 import com.knowway.record.repository.RecordRepository;
 import com.knowway.user.entity.Member;

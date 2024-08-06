@@ -3,7 +3,7 @@ package com.knowway.auth.vo;
 public class AuthRequestHeaderPrefix {
   private AuthRequestHeaderPrefix(){}
 
-  public static String AUTHORIZATION_HEADER ="Authorization";
-  public static String TOKEN_PREFIX ="Bearer ";
+  public static final String AUTHORIZATION_HEADER ="Authorization";
+  public static final String TOKEN_PREFIX ="Bearer ";
 
 }

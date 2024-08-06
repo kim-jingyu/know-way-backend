@@ -1,11 +1,7 @@
 package com.knowway.chat.repository;
 
-import com.knowway.chat.dto.ChatMessageResponse;
 import com.knowway.chat.entity.ChatMessage;
 import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.List;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

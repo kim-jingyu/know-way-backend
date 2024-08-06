@@ -15,7 +15,6 @@ import com.knowway.user.exception.UserNotFoundException;
 import com.knowway.user.mapper.UserMapper;
 import com.knowway.user.repository.MemberRepository;
 import com.knowway.user.vo.Role;
-import jdk.jshell.spi.ExecutionControl.UserException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -71,12 +70,12 @@ public class UserServiceImpl implements UserService {
 
 
   public void deleteRecord(Long userId, Long recordId) {
-    Record record = recordRepository.findByMemberIdAndId(userId, recordId)
+    Record userRecord = recordRepository.findByMemberIdAndId(userId, recordId)
         .orElseThrow(RecordNotFoundException::new);
     if (Boolean.TRUE.equals(record.getRecordIsSelected())) {
       throw new RecordAlreadySelectedByAdminException();
     }
-    recordRepository.delete(record);
+    recordRepository.delete(userRecord);
   }
 
 }
