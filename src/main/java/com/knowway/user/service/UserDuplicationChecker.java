@@ -1,6 +1,6 @@
 package com.knowway.user.service;
 
-import com.knowway.user.exception.UserException;
+import com.knowway.user.exception.EmailIsDuplicatedException;
 import com.knowway.user.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,8 +17,7 @@ public class UserDuplicationChecker {
 
    public void
    emailDuplicationChecker(String email){
-    if(memberRepository.findByEmail(email).isPresent()) throw new UserException("이미 존재하는 이메일입니다.");
-
+    if(memberRepository.findByEmail(email).isPresent()) throw new EmailIsDuplicatedException();
   }
 
 }

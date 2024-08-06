@@ -11,10 +11,11 @@ import com.knowway.user.dto.UserRecordDto;
 import com.knowway.user.dto.UserRecordResponse;
 import com.knowway.user.dto.UserSignUpRequest;
 import com.knowway.user.entity.Member;
-import com.knowway.user.exception.UserException;
+import com.knowway.user.exception.UserNotFoundException;
 import com.knowway.user.mapper.UserMapper;
 import com.knowway.user.repository.MemberRepository;
 import com.knowway.user.vo.Role;
+import jdk.jshell.spi.ExecutionControl.UserException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -57,14 +58,14 @@ public class UserServiceImpl implements UserService {
   @Override
   public UserChatMemberIdResponse getUserChatMemberId(Long userId) {
     Long chatId = memberRepository.getUserChatIdFromUserId(userId)
-        .orElseThrow(() -> new UserException("존재하지 않은 유저입니다."));
+        .orElseThrow(UserNotFoundException::new);
     return UserChatMemberIdResponse.builder().memberChatId(chatId).build();
   }
 
   @Override
   public Role getRole(Long userId) {
     Member member = memberRepository.findById(userId)
-        .orElseThrow(() -> new UserException("존재하지 않은 유저입니다."));
+        .orElseThrow(UserNotFoundException::new);
     return member.getRole();
   }
 
