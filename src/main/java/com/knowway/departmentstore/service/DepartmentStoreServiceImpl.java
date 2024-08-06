@@ -9,9 +9,12 @@ import com.knowway.departmentstore.repository.DepartmentStoreFloorRepository;
 import com.knowway.departmentstore.repository.DepartmentStoreRepository;
 import com.knowway.s3.exception.S3Exception;
 import com.knowway.s3.service.S3UploadService;
-import com.knowway.user.entity.Member;
-import com.knowway.user.exception.UserException;
+import com.knowway.user.exception.UserNotFoundException;
 import com.knowway.user.repository.MemberRepository;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -19,11 +22,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
@@ -40,7 +38,7 @@ public class DepartmentStoreServiceImpl implements DepartmentStoreService {
     @Transactional
     @Override
     public Long makeDepartmentStore(DepartmentStoreRequest request, Long memberId) {
-        memberRepository.findById(memberId).orElseThrow(() -> new UserException("사용자를 찾지 못했습니다"));
+        memberRepository.findById(memberId).orElseThrow(UserNotFoundException::new);
         return departmentStoreRepository.save(DepartmentStore.createDepartmentStore(request, request.getFloorData().stream()
                 .map(request1 -> {
                     MultipartFile image = request1.getImage();
@@ -101,7 +99,7 @@ public class DepartmentStoreServiceImpl implements DepartmentStoreService {
     @Transactional
     @Override
     public void removeDepartmentStore(Long departmentStoreId, Long memberId) {
-        memberRepository.findById(memberId).orElseThrow(() -> new UserException("사용자를 찾지 못했습니다"));
+        memberRepository.findById(memberId).orElseThrow(UserNotFoundException::new);
         departmentStoreRepository.delete(departmentStoreRepository.getById(departmentStoreId));
     }
 

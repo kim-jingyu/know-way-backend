@@ -36,7 +36,7 @@ public class JwtAuthenticationFilter<K, V> extends OncePerRequestFilter {
    * The Raw type with AccessTokenHandler is fine, just because the Generic Type is only used when
    * persisting the token, otherwise this filter just validate the token, So won't be problem
    */
-  private final AccessTokenHandler<K> accessTokenHandler;
+  private final AccessTokenHandler accessTokenHandler;
   private final AccessTokenWithRefreshTokenService<K, V, Long> accessTokenWithRefreshTokenService;
   private final TypeConvertor<String, K> tokenToKeyConvertor;
   private final TypeConvertor<String, V> subjectToValueConvertor;

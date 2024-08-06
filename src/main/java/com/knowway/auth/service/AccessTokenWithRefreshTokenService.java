@@ -16,27 +16,26 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 @Service
-public class AccessTokenWithRefreshTokenService<K, V, USERID extends Long> extends
+public class AccessTokenWithRefreshTokenService<K, V, USERID> extends
     RestfulAuthService<K, USERID> {
 
   private final TypeConvertor<String, K> tokenToKeyConvertor;
   private final TypeConvertor<USERID, V> userIdToValueConvertor;
   private final RefreshTokenHandler<K, V> refreshTokenHandler;
-  private final AccessTokenHandler<V> valueAccessTokenHandler;
+  private final AccessTokenHandler valueAccessTokenHandler;
 
   @Autowired
   public AccessTokenWithRefreshTokenService(
       @Qualifier("tokenToKeyConverter") TypeConvertor<String, K> tokenToKeyConvertor,
-      @Qualifier("userIdToSubjectConverter") TypeConvertor<USERID, String> userIdToSubjectConvertor,
-      @Qualifier("accessTokenHandler") AccessTokenHandler<K> accessTokenHandler,
-      MemberRepository memberRepository,
-      @Qualifier("keyToTokenConverter") TypeConvertor<String, K> keyToTokenConvertor,
       @Qualifier("userIdToValueConverter") TypeConvertor<USERID, V> userIdToValueConvertor,
       @Qualifier("refreshTokenHandler") RefreshTokenHandler<K, V> refreshTokenHandler,
-      @Qualifier("valueAccessTokenHandler") AccessTokenHandler<V> valueAccessTokenHandler) {
+      @Qualifier("valueAccessTokenHandler") AccessTokenHandler valueAccessTokenHandler,
+      @Qualifier("accessTokenHandler") AccessTokenHandler accessTokenHandler,
+      @Qualifier("userIdToSubjectConverter") TypeConvertor<USERID, String> userIdToSubjectConvertor,
+      MemberRepository memberRepository) {
 
     super(tokenToKeyConvertor, userIdToSubjectConvertor, accessTokenHandler, memberRepository);
-    this.tokenToKeyConvertor = keyToTokenConvertor;
+    this.tokenToKeyConvertor = tokenToKeyConvertor;
     this.userIdToValueConvertor = userIdToValueConvertor;
     this.refreshTokenHandler = refreshTokenHandler;
     this.valueAccessTokenHandler = valueAccessTokenHandler;
@@ -67,7 +66,7 @@ public class AccessTokenWithRefreshTokenService<K, V, USERID extends Long> exten
 
   public String reAuthentication(K oldKey, V value, Map<String,Object> claims) {
 
-    String accessToken = valueAccessTokenHandler.createToken(value,
+    String accessToken = valueAccessTokenHandler.createToken((String) value,
         Map.of(ClaimsKey.ROLE_CLAIMS_KEY, claims.get(ClaimsKey.ROLE_CLAIMS_KEY)));
     K newKey = tokenToKeyConvertor.convert(accessToken);
 

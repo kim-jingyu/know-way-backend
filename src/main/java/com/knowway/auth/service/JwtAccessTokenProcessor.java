@@ -15,7 +15,7 @@ public class JwtAccessTokenProcessor {
 
   private String accessKey;
   private long accessKeyLifeTime;
-  private AccessTokenInvalidationStrategy<String> accessTokenInvalidationStrategy;
+  private AccessTokenInvalidationStrategy accessTokenInvalidationStrategy;
 
 
   public boolean isValidToken(String token) {

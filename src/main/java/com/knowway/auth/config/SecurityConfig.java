@@ -12,7 +12,6 @@ import com.knowway.auth.service.AccessTokenInvalidationStrategy;
 import com.knowway.auth.service.AccessTokenSetAsBlackListWhenInvalidating;
 import com.knowway.auth.service.AccessTokenWithRefreshTokenService;
 import com.knowway.auth.service.JwtAccessTokenProcessor;
-import com.knowway.auth.service.LongToStringConverter;
 import com.knowway.auth.service.ReAuthenticationStrategy;
 import com.knowway.auth.service.RefreshTokenPersistAtRedis;
 import com.knowway.auth.service.RefreshTokenPersistLocationStrategy;
@@ -50,10 +49,10 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 @Configuration
 @EnableWebSecurity
-public class SecurityConfig {
+public class SecurityConfig<K extends String, V extends String, USERID extends Long> {
 
   private final RedisTemplate<String, String> blackListRedisTemplate;
-  private final RedisTemplate<String, String> refreshRedisTemplate;
+  private final RedisTemplate<K, V> refreshRedisTemplate;
   private final MemberRepository memberRepository;
 
 
@@ -72,7 +71,7 @@ public class SecurityConfig {
 
   public SecurityConfig(
       @Qualifier("redisTemplate") RedisTemplate<String, String> blackListRedisTemplate,
-      @Qualifier("refreshRedisTemplate") RedisTemplate<String, String> refreshRedisTemplate,
+      @Qualifier("refreshRedisTemplate") RedisTemplate<K, V> refreshRedisTemplate,
       MemberRepository memberRepository
   ) {
     this.blackListRedisTemplate = blackListRedisTemplate;
@@ -121,10 +120,10 @@ public class SecurityConfig {
 
   @Bean("jwtAuthenticationFilter")
   public JwtAuthenticationFilter<String, String> jwtAuthenticationFilter(
-      AccessTokenHandler<String> accessTokenHandler,
+      AccessTokenHandler accessTokenHandler,
       @Qualifier("tokenToKeyConverter") TypeConvertor<String, String> tokenToKeyConvertor,
-      @Qualifier("subjectToValueConvertor") TypeConvertor<String, String> subjectToValueConvertor,
-      AccessTokenWithRefreshTokenService<String,String,Long> accessTokenWithRefreshTokenService) {
+      @Qualifier("keyToTokenConvertor") TypeConvertor<String, String> subjectToValueConvertor,
+      AccessTokenWithRefreshTokenService<String, String, Long> accessTokenWithRefreshTokenService) {
     return new JwtAuthenticationFilter<>(accessTokenHandler, accessTokenWithRefreshTokenService,
         tokenToKeyConvertor, subjectToValueConvertor);
   }
@@ -181,9 +180,9 @@ public class SecurityConfig {
   }
 
   @Bean
-  public AccessTokenInvalidationStrategy<String> tokenInvalidationStrategy() {
-    return new AccessTokenSetAsBlackListWhenInvalidating<>("BlackListFixedValue",
-        refreshKeyLifeTime, blackListRedisTemplate);
+  public AccessTokenInvalidationStrategy tokenInvalidationStrategy() {
+    return new AccessTokenSetAsBlackListWhenInvalidating(refreshKeyLifeTime,
+        blackListRedisTemplate);
   }
 
 
@@ -193,47 +192,40 @@ public class SecurityConfig {
   }
 
   @Bean
-  public RefreshTokenPersistLocationStrategy<String, String> refreshPersistStrategy() {
+  public RefreshTokenPersistLocationStrategy<K, V> refreshPersistStrategy() {
     return new RefreshTokenPersistAtRedis<>(refreshRedisTemplate);
   }
 
   @Bean
-  public ReAuthenticationStrategy<String, String> reAuthenticationStrategy() {
+  public ReAuthenticationStrategy<K, V> reAuthenticationStrategy() {
     return new RtrRefreshTokenReIssueStrategy<>(refreshPersistStrategy(), refreshKeyLifeTime);
   }
 
   @Bean
-  public RefreshTokenProcessor<String, String> refreshTokenProcessor() {
+  public RefreshTokenProcessor<K, V> refreshTokenProcessor() {
     return new RefreshTokenProcessor<>(refreshKeyLifeTime, refreshPersistStrategy(),
         reAuthenticationStrategy());
   }
 
 
   @Bean
-  public TypeConvertor<Long, String> userIdToKeyConverter() {
-    return new LongToStringConverter();
-  }
-
-  @Bean
-  public RefreshTokenHandler<String, String> refreshTokenHandler() {
+  public RefreshTokenHandler<K, V> refreshTokenHandler() {
     return new RefreshTokenHandler<>(refreshTokenProcessor());
   }
 
   @Bean
-  public AccessTokenWithRefreshTokenService<String, String, Long> accessTokenWithRefreshTokenService(
+  public AccessTokenWithRefreshTokenService<K, V, USERID> accessTokenWithRefreshTokenService(
       @Qualifier("tokenToKeyConverter") TypeConvertor<String, String> tokenToKeyConvertor,
-      @Qualifier("userIdToValueConverter") TypeConvertor<Long, String> userIdToSubjectConvertor,
-      @Qualifier("accessTokenHandler") AccessTokenHandler<String> accessTokenHandler,
+      @Qualifier("userIdToSubjectConverter") TypeConvertor<Long, String> userIdToSubjectConvertor,
       MemberRepository memberRepository,
-      @Qualifier("keyToTokenConverter") TypeConvertor<String, String> keyToTokenConverter,
+      @Qualifier("keyToTokenConvertor") TypeConvertor<String, String> keyToTokenConverter,
       @Qualifier("userIdToValueConverter") TypeConvertor<Long, String> userIdToValueConvertor,
-      @Qualifier("refreshTokenHandler") RefreshTokenHandler<String, String> refreshTokenHandler,
-      @Qualifier("accessTokenHandler") AccessTokenHandler<String> valueAccessTokenHandler) {
+      @Qualifier("refreshTokenHandler") RefreshTokenHandler<K, V> refreshTokenHandler,
+      @Qualifier("accessTokenHandler") AccessTokenHandler valueAccessTokenHandler) {
 
     return new AccessTokenWithRefreshTokenService<>(
         tokenToKeyConvertor,
         userIdToSubjectConvertor,
-        accessTokenHandler,
         memberRepository,
         keyToTokenConverter,
         userIdToValueConvertor,
@@ -242,68 +234,55 @@ public class SecurityConfig {
     );
   }
 
+  @Qualifier("accessTokenHandler")
   @Bean
-  @Qualifier("tokenToKeyConverter")
-  public TypeConvertor<String, String> tokenToKeyConverter() {
-    return token -> token;
-  }
-
-  @Bean
-  @Qualifier("userIdToValueConverter")
-  public TypeConvertor<Long, String> userIdToValueConverter() {
-    return String::valueOf;
-  }
-
-  @Bean
-  @Qualifier("keyToTokenConverter")
-  public TypeConvertor<String, String> keyToTokenConverter() {
-    return key -> key;
-  }
-
-  @Bean
-  @Qualifier("valueToUserIdConverter")
-  public TypeConvertor<String, Long> valueToUserIdConverter() {
-    return Long::valueOf;
-  }
-
-  @Bean
-  @Qualifier("subjectToValueConvertor")
-  public TypeConvertor<String, String> subjectToValueConvertor() {
-    return String::valueOf;
-  }
-
-  @Bean
-  public AccessTokenHandler<String> accessTokenHandler() {
-    return new AccessTokenHandler<>(keyToTokenConverter(), jwtTokenProcessor());
+  public AccessTokenHandler accessTokenHandler() {
+    return new AccessTokenHandler(jwtTokenProcessor());
   }
 
   @Bean
   public AuthenticationSuccessHandler successHandler(
-      AccessTokenWithRefreshTokenService<String, String, Long> accessTokenWithRefreshTokenService) {
+      AccessTokenWithRefreshTokenService<K, V, USERID> accessTokenWithRefreshTokenService) {
     return new SystemAuthenticationSuccessHandler<>(accessTokenWithRefreshTokenService);
   }
 
   @Configuration
   public static class ConversionConfig {
 
+    @Qualifier("tokenToKeyConverter")
     @Bean
-    public TypeConvertor<String, String> tokenToKeyConverter() {
+    public static TypeConvertor<String, String> tokenToKeyConverter() {
       return token -> token;
     }
 
+    @Qualifier("userIdToValueConverter")
     @Bean
-    public TypeConvertor<Long, String> userIdToValueConverter() {
+    public static TypeConvertor<Long, String> userIdToValueConverter() {
       return String::valueOf;
     }
 
+    @Qualifier("keyToTokenConvertor")
     @Bean
-    public TypeConvertor<String, String> keyToTokenConvertor() {
+    public static TypeConvertor<String, String> keyToTokenConvertor() {
       return key -> key;
     }
 
+    @Qualifier("valueToUserIdConvertor")
     @Bean
-    public TypeConvertor<String, Long> valueToUserIdConvertor() {
+    public static TypeConvertor<String, Long> valueToUserIdConvertor() {
       return Long::parseLong;
+    }
+
+    @Qualifier("userIdToKeyConverter")
+    @Bean
+    public static TypeConvertor<Long, String> userIdToKeyConverter() {
+      return String::valueOf;
+    }
+
+    @Qualifier("userIdToSubjectConverter")
+    @Bean
+    public static TypeConvertor<Long, String> userIdToSubjectConverter() {
+      return String::valueOf;
     }
   }
 }

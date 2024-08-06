@@ -11,8 +11,6 @@ public class RefreshTokenPersistAtRedis<K, V> implements
 
     private final RedisTemplate<K, V> refreshRedisTemplate;
 
-
-
     @Override
     public void persist(K key, V value, long lifeTime) {
         refreshRedisTemplate.opsForValue().set(key, value, lifeTime, TimeUnit.MILLISECONDS);

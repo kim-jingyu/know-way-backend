@@ -13,7 +13,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @RequiredArgsConstructor
 @Configuration
-public class RedisConfig {
+public class RedisConfig<K extends String, V extends String> {
 
   @Value("${spring.data.redis.password}")
   private String password;
@@ -25,7 +25,7 @@ public class RedisConfig {
 
   @Qualifier("redisTemplate")
   @Bean
-  public RedisTemplate<String, String> redisTemplate(
+  public RedisTemplate<String,String> blackListRedisFactory(
       @Qualifier("blackListRedisFactory") RedisConnectionFactory blackListRedisFactory) {
     RedisTemplate<String, String> template = new RedisTemplate<>();
     template.setConnectionFactory(blackListRedisFactory);
@@ -35,9 +35,9 @@ public class RedisConfig {
   }
   @Qualifier("refreshRedisTemplate")
   @Bean
-  public RedisTemplate<String, String> refreshRedisTemplate(
+  public RedisTemplate<K, V> refreshRedisTemplate(
       @Qualifier("refreshRedisFactory") RedisConnectionFactory blackListRedisFactory) {
-    RedisTemplate<String, String> template = new RedisTemplate<>();
+    RedisTemplate<K, V> template = new RedisTemplate<>();
     template.setConnectionFactory(blackListRedisFactory);
     template.setKeySerializer(new StringRedisSerializer());
     template.setValueSerializer(new StringRedisSerializer());

@@ -13,17 +13,17 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.util.Map;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-public abstract class RestfulAuthService<K, USERID extends Long> implements AuthService {
+public abstract class RestfulAuthService<K, USERID> implements AuthService {
 
   private final TypeConvertor<String, K> tokenToKeyConvertor;
   private final TypeConvertor<USERID, String> userIdToSubjectConvertor;
-  private final AccessTokenHandler<K> accessTokenHandler;
+  private final AccessTokenHandler accessTokenHandler;
   protected final MemberRepository memberRepository;
 
   protected RestfulAuthService(
       TypeConvertor<String, K> tokenToKeyConvertor,
       TypeConvertor<USERID, String> userIdToSubjectConvertor,
-      AccessTokenHandler<K> accessTokenHandler,
+      AccessTokenHandler accessTokenHandler,
       MemberRepository memberRepository) {
     this.tokenToKeyConvertor = tokenToKeyConvertor;
     this.userIdToSubjectConvertor = userIdToSubjectConvertor;
@@ -38,9 +38,8 @@ public abstract class RestfulAuthService<K, USERID extends Long> implements Auth
           RequestHeaderNaming.REQUEST_HEADER_USER_ID);
       Role role = getRole();
       String accessSubject = userIdToSubjectConvertor.convert(userId);
-      K key = tokenToKeyConvertor.convert(accessSubject);
 
-      String token = accessTokenHandler.createToken(key,
+      String token = accessTokenHandler.createToken(accessSubject,
           Map.of(ClaimsKey.ROLE_CLAIMS_KEY, role));
       response.setHeader(
           AuthRequestHeaderPrefix.AUTHORIZATION_HEADER,
