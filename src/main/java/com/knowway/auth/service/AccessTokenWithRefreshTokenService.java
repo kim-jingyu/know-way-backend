@@ -3,6 +3,7 @@ package com.knowway.auth.service;
 import com.knowway.auth.exception.AuthException;
 import com.knowway.auth.handler.AccessTokenHandler;
 import com.knowway.auth.handler.RefreshTokenHandler;
+import com.knowway.auth.util.ClaimsWrapper;
 import com.knowway.auth.util.TypeConvertor;
 import com.knowway.auth.vo.AuthRequestHeaderPrefix;
 import com.knowway.auth.vo.ClaimsKey;
@@ -16,8 +17,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 @Service
-public class AccessTokenWithRefreshTokenService<K, V, USERID> extends
-    RestfulAuthService<K, USERID> {
+public class AccessTokenWithRefreshTokenService<K, V, USERID> extends RestfulAuthService<K, USERID> {
 
   private final TypeConvertor<String, K> tokenToKeyConvertor;
   private final TypeConvertor<USERID, V> userIdToValueConvertor;
@@ -27,20 +27,18 @@ public class AccessTokenWithRefreshTokenService<K, V, USERID> extends
   @Autowired
   public AccessTokenWithRefreshTokenService(
       @Qualifier("tokenToKeyConverter") TypeConvertor<String, K> tokenToKeyConvertor,
+      @Qualifier("userIdToSubjectConverter") TypeConvertor<USERID, String> userIdToSubjectConvertor,
+      @Qualifier("memberRepository") MemberRepository memberRepository,
       @Qualifier("userIdToValueConverter") TypeConvertor<USERID, V> userIdToValueConvertor,
       @Qualifier("refreshTokenHandler") RefreshTokenHandler<K, V> refreshTokenHandler,
-      @Qualifier("valueAccessTokenHandler") AccessTokenHandler valueAccessTokenHandler,
-      @Qualifier("accessTokenHandler") AccessTokenHandler accessTokenHandler,
-      @Qualifier("userIdToSubjectConverter") TypeConvertor<USERID, String> userIdToSubjectConvertor,
-      MemberRepository memberRepository) {
+      @Qualifier("accessTokenHandler") AccessTokenHandler valueAccessTokenHandler) {
 
-    super(tokenToKeyConvertor, userIdToSubjectConvertor, accessTokenHandler, memberRepository);
+    super(userIdToSubjectConvertor, valueAccessTokenHandler,memberRepository);
     this.tokenToKeyConvertor = tokenToKeyConvertor;
     this.userIdToValueConvertor = userIdToValueConvertor;
     this.refreshTokenHandler = refreshTokenHandler;
     this.valueAccessTokenHandler = valueAccessTokenHandler;
   }
-
 
   @Override
   public void login(HttpServletRequest request, HttpServletResponse response) {
@@ -55,22 +53,20 @@ public class AccessTokenWithRefreshTokenService<K, V, USERID> extends
     V value = userIdToValueConvertor.convert(userId);
 
     refreshTokenHandler.persistToken(key, value);
-
   }
-
 
   @Override
   public void logout(HttpServletRequest request, HttpServletResponse response) {
     super.logout(request, response);
   }
 
-  public String reAuthentication(K oldKey, V value, Map<String,Object> claims) {
-
-    String accessToken = valueAccessTokenHandler.createToken((String) value,
+  public String reAuthentication(K oldKey, V value, ClaimsWrapper claims) {
+    Object sub = claims.get("sub");
+    String accessToken = valueAccessTokenHandler.createToken((String) sub,
         Map.of(ClaimsKey.ROLE_CLAIMS_KEY, claims.get(ClaimsKey.ROLE_CLAIMS_KEY)));
     K newKey = tokenToKeyConvertor.convert(accessToken);
 
-    if(!refreshTokenHandler.isValid(oldKey)) throw new AuthException("Expired");
+    if (!refreshTokenHandler.isValid(oldKey)) throw new AuthException("Expired");
     refreshTokenHandler.invalidate(oldKey);
     refreshTokenHandler.persistToken(newKey, value);
 
@@ -79,3 +75,4 @@ public class AccessTokenWithRefreshTokenService<K, V, USERID> extends
 
 
 }
+

@@ -25,7 +25,7 @@ public class RedisConfig<K extends String, V extends String> {
 
   @Qualifier("redisTemplate")
   @Bean
-  public RedisTemplate<String,String> blackListRedisFactory(
+  public RedisTemplate<String,String> redisTemplate(
       @Qualifier("blackListRedisFactory") RedisConnectionFactory blackListRedisFactory) {
     RedisTemplate<String, String> template = new RedisTemplate<>();
     template.setConnectionFactory(blackListRedisFactory);

@@ -15,17 +15,14 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 public abstract class RestfulAuthService<K, USERID> implements AuthService {
 
-  private final TypeConvertor<String, K> tokenToKeyConvertor;
   private final TypeConvertor<USERID, String> userIdToSubjectConvertor;
   private final AccessTokenHandler accessTokenHandler;
   protected final MemberRepository memberRepository;
 
   protected RestfulAuthService(
-      TypeConvertor<String, K> tokenToKeyConvertor,
       TypeConvertor<USERID, String> userIdToSubjectConvertor,
       AccessTokenHandler accessTokenHandler,
       MemberRepository memberRepository) {
-    this.tokenToKeyConvertor = tokenToKeyConvertor;
     this.userIdToSubjectConvertor = userIdToSubjectConvertor;
     this.accessTokenHandler = accessTokenHandler;
     this.memberRepository = memberRepository;

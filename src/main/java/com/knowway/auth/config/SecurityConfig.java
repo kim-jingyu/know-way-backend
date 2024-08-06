@@ -213,26 +213,12 @@ public class SecurityConfig<K extends String, V extends String, USERID extends L
     return new RefreshTokenHandler<>(refreshTokenProcessor());
   }
 
+  @Qualifier("tokenToKeyConverter")
   @Bean
-  public AccessTokenWithRefreshTokenService<K, V, USERID> accessTokenWithRefreshTokenService(
-      @Qualifier("tokenToKeyConverter") TypeConvertor<String, String> tokenToKeyConvertor,
-      @Qualifier("userIdToSubjectConverter") TypeConvertor<Long, String> userIdToSubjectConvertor,
-      MemberRepository memberRepository,
-      @Qualifier("keyToTokenConvertor") TypeConvertor<String, String> keyToTokenConverter,
-      @Qualifier("userIdToValueConverter") TypeConvertor<Long, String> userIdToValueConvertor,
-      @Qualifier("refreshTokenHandler") RefreshTokenHandler<K, V> refreshTokenHandler,
-      @Qualifier("accessTokenHandler") AccessTokenHandler valueAccessTokenHandler) {
-
-    return new AccessTokenWithRefreshTokenService<>(
-        tokenToKeyConvertor,
-        userIdToSubjectConvertor,
-        memberRepository,
-        keyToTokenConverter,
-        userIdToValueConvertor,
-        refreshTokenHandler,
-        valueAccessTokenHandler
-    );
+  public static TypeConvertor<String, String> tokenToKeyConverter() {
+    return token -> token;
   }
+
 
   @Qualifier("accessTokenHandler")
   @Bean
@@ -246,20 +232,32 @@ public class SecurityConfig<K extends String, V extends String, USERID extends L
     return new SystemAuthenticationSuccessHandler<>(accessTokenWithRefreshTokenService);
   }
 
-  @Configuration
-  public static class ConversionConfig {
+  @Qualifier("userIdToValueConverter")
+  @Bean
+  public static TypeConvertor<Long, String> userIdToValueConverter() {
+    return String::valueOf;
+  }
 
-    @Qualifier("tokenToKeyConverter")
-    @Bean
-    public static TypeConvertor<String, String> tokenToKeyConverter() {
-      return token -> token;
-    }
 
-    @Qualifier("userIdToValueConverter")
-    @Bean
-    public static TypeConvertor<Long, String> userIdToValueConverter() {
-      return String::valueOf;
-    }
+  @Bean
+  public AccessTokenWithRefreshTokenService<K, V, USERID> accessTokenWithRefreshTokenService(
+      @Qualifier("tokenToKeyConverter") TypeConvertor<String, K> tokenToKeyConvertor,
+      @Qualifier("userIdToSubjectConverter") TypeConvertor<USERID, String> userIdToSubjectConvertor,
+      @Qualifier("memberRepository") MemberRepository memberRepository,
+      @Qualifier("userIdToValueConverter") TypeConvertor<USERID, V> userIdToValueConvertor,
+      @Qualifier("refreshTokenHandler") RefreshTokenHandler<K, V> refreshTokenHandler,
+      @Qualifier("accessTokenHandler") AccessTokenHandler valueAccessTokenHandler) {
+
+    return new AccessTokenWithRefreshTokenService<>(
+        tokenToKeyConvertor,
+        userIdToSubjectConvertor,
+        memberRepository,
+        userIdToValueConvertor,
+        refreshTokenHandler,
+        valueAccessTokenHandler
+    );
+  }
+
 
     @Qualifier("keyToTokenConvertor")
     @Bean
@@ -285,4 +283,5 @@ public class SecurityConfig<K extends String, V extends String, USERID extends L
       return String::valueOf;
     }
   }
-}
+
+
