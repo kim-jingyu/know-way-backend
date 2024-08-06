@@ -1,7 +1,6 @@
 package com.knowway.auth.manager;
 
 import com.knowway.auth.exception.AuthException;
-import com.knowway.auth.util.UserIdConverter;
 import com.knowway.user.entity.Member;
 import com.knowway.user.repository.MemberRepository;
 import java.util.Collections;
@@ -15,11 +14,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 
 @RequiredArgsConstructor
-public class UserAuthenticationManager<USERID> implements AuthenticationManager {
+public class UserAuthenticationManager implements AuthenticationManager {
 
-  private PasswordEncoder encoder;
   private MemberRepository memberRepository;
-  private UserIdConverter<USERID> userIdConverter;
+  private PasswordEncoder encoder;
 
   public UserAuthenticationManager(MemberRepository memberRepository, PasswordEncoder encoder) {
     this.memberRepository = memberRepository;
@@ -40,7 +38,7 @@ public class UserAuthenticationManager<USERID> implements AuthenticationManager 
       throw new AuthException("계정 정보가 불일치 합니다.");
     }
 
-    return new UsernamePasswordAuthenticationToken(userIdConverter.convert(member.getId()),
+    return new UsernamePasswordAuthenticationToken(member.getId(),
         member.getPassword(),
         Collections.singleton(new SimpleGrantedAuthority(member.getRole().name())));
   }

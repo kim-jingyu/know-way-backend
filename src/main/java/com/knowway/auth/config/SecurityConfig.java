@@ -20,7 +20,6 @@ import com.knowway.auth.util.TypeConvertor;
 import com.knowway.user.repository.MemberRepository;
 import java.util.Collections;
 import java.util.List;
-import java.util.UUID;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -172,8 +171,9 @@ public class SecurityConfig<K extends String, V extends String, USERID extends L
   @Qualifier("parentManager")
   @Bean
   public AuthenticationManager parentManager(PasswordEncoder encoder) {
-    return new UserAuthenticationManager<UUID>(memberRepository, encoder);
+    return new UserAuthenticationManager(memberRepository,encoder);
   }
+
 
   @Bean
   public PasswordEncoder bCryptPasswordEncoder() {
@@ -233,12 +233,6 @@ public class SecurityConfig<K extends String, V extends String, USERID extends L
     return new SystemAuthenticationSuccessHandler<>(accessTokenWithRefreshTokenService);
   }
 
-  @Qualifier("userIdToValueConverter")
-  @Bean
-  public static TypeConvertor<Long, String> userIdToValueConverter() {
-    return String::valueOf;
-  }
-
 
   @Bean
   public AccessTokenWithRefreshTokenService<K, V, USERID> accessTokenWithRefreshTokenService(
@@ -258,6 +252,9 @@ public class SecurityConfig<K extends String, V extends String, USERID extends L
         valueAccessTokenHandler
     );
   }
+
+  @Configuration
+  public static class Convertor {
 
     @Qualifier("keyToTokenConvertor")
     @Bean
@@ -282,6 +279,12 @@ public class SecurityConfig<K extends String, V extends String, USERID extends L
     public static TypeConvertor<Long, String> userIdToSubjectConverter() {
       return String::valueOf;
     }
-  }
 
+    @Qualifier("userIdToValueConverter")
+    @Bean
+    public static TypeConvertor<Long, String> userIdToValueConverter() {
+      return String::valueOf;
+    }
+  }
+}
 
