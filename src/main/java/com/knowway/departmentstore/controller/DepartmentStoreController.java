@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,9 +23,10 @@ public class DepartmentStoreController {
     private final DepartmentStoreServiceImpl service;
     private final ObjectMapper objectMapper;
 
-    @PostMapping(value = "/make", consumes = "multipart/form-data")
+    @PostMapping(consumes = "multipart/form-data")
     public ResponseEntity<Long> makeDepartmentStore(@RequestPart("departmentStoreRequest") String departmentStoreRequest,
-                                                    @RequestPart("images") List<MultipartFile> images) throws JsonProcessingException {
+                                                    @RequestPart("images") List<MultipartFile> images,
+                                                    @AuthenticationPrincipal Long memberId) throws JsonProcessingException {
         DepartmentStoreRequest request = objectMapper.readValue(departmentStoreRequest, DepartmentStoreRequest.class);
 
         if (request.getFloorData().size() != images.size()) {
@@ -36,7 +38,7 @@ public class DepartmentStoreController {
         }
 
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(service.makeDepartmentStore(request));
+                .body(service.makeDepartmentStore(request, memberId));
     }
 
     @GetMapping
@@ -73,8 +75,9 @@ public class DepartmentStoreController {
     }
 
     @DeleteMapping(value = "/{deptId}")
-    public ResponseEntity<Void> removeDepartmentStore(@PathVariable(value = "deptId") Long departmentStoreId) {
-        service.removeDepartmentStore(departmentStoreId);
+    public ResponseEntity<Void> removeDepartmentStore(@PathVariable(value = "deptId") Long departmentStoreId,
+                                                      @AuthenticationPrincipal Long memberId) {
+        service.removeDepartmentStore(departmentStoreId, memberId);
         return ResponseEntity.ok().build();
     }
 }

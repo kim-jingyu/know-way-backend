@@ -9,6 +9,9 @@ import com.knowway.departmentstore.repository.DepartmentStoreFloorRepository;
 import com.knowway.departmentstore.repository.DepartmentStoreRepository;
 import com.knowway.s3.exception.S3Exception;
 import com.knowway.s3.service.S3UploadService;
+import com.knowway.user.entity.Member;
+import com.knowway.user.exception.UserException;
+import com.knowway.user.repository.MemberRepository;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -28,6 +31,7 @@ import java.util.List;
 public class DepartmentStoreServiceImpl implements DepartmentStoreService {
     private final DepartmentStoreRepository departmentStoreRepository;
     private final DepartmentStoreFloorRepository departmentStoreFloorRepository;
+    private final MemberRepository memberRepository;
     private final S3UploadService s3UploadService;
 
     private static final double DISTANCE = 50.0;
@@ -35,7 +39,8 @@ public class DepartmentStoreServiceImpl implements DepartmentStoreService {
 
     @Transactional
     @Override
-    public Long makeDepartmentStore(DepartmentStoreRequest request) {
+    public Long makeDepartmentStore(DepartmentStoreRequest request, Long memberId) {
+        memberRepository.findById(memberId).orElseThrow(() -> new UserException("사용자를 찾지 못했습니다"));
         return departmentStoreRepository.save(DepartmentStore.createDepartmentStore(request, request.getFloorData().stream()
                 .map(request1 -> {
                     MultipartFile image = request1.getImage();
@@ -95,7 +100,8 @@ public class DepartmentStoreServiceImpl implements DepartmentStoreService {
 
     @Transactional
     @Override
-    public void removeDepartmentStore(Long departmentStoreId) {
+    public void removeDepartmentStore(Long departmentStoreId, Long memberId) {
+        memberRepository.findById(memberId).orElseThrow(() -> new UserException("사용자를 찾지 못했습니다"));
         departmentStoreRepository.delete(departmentStoreRepository.getById(departmentStoreId));
     }
 
