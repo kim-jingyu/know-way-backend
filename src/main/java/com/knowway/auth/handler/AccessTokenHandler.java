@@ -1,21 +1,19 @@
 package com.knowway.auth.handler;
 
 import com.knowway.auth.service.JwtAccessTokenProcessor;
-import com.knowway.auth.util.TypeConvertor;
 import com.knowway.user.vo.Role;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class AccessTokenHandler<K> {
+public class AccessTokenHandler {
 
-  private final TypeConvertor<K,String> keyToStringConvertor;
   private final JwtAccessTokenProcessor jwtAccessTokenProcessor;
 
 
-  public String createToken(K subject,
+  public String createToken(String subject,
       Map<String, Object> claimList) {
-    return jwtAccessTokenProcessor.createAccessToken(keyToStringConvertor.convert(subject), claimList);
+    return jwtAccessTokenProcessor.createAccessToken(subject, claimList);
   }
 
 

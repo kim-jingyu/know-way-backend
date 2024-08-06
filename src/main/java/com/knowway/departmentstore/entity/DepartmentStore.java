@@ -23,7 +23,7 @@ public class DepartmentStore extends BaseEntity {
     private Long departmentStoreId;
     @Column(nullable = false)
     private String departmentStoreName;
-    @Column(nullable = false,unique = true)
+    @Column(nullable = false)
     private String departmentStoreBranch;
     @Column(nullable = false)
     private Double departmentStoreLatitude;

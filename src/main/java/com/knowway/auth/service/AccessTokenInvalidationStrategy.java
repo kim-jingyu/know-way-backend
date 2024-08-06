@@ -1,7 +1,7 @@
 package com.knowway.auth.service;
 
 
-public interface AccessTokenInvalidationStrategy<K> {
-  void invalidate(K key);
-  boolean isRegistered(K key);
+public interface AccessTokenInvalidationStrategy {
+  void invalidate(String key);
+  boolean isRegistered(String key);
 }

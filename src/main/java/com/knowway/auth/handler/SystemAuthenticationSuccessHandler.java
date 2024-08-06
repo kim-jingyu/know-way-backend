@@ -12,9 +12,9 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 
 
 @RequiredArgsConstructor
-public class SystemAuthenticationSuccessHandler<K,USERID extends Long> implements AuthenticationSuccessHandler {
+public class SystemAuthenticationSuccessHandler<USERID> implements AuthenticationSuccessHandler {
 
-  private final RestfulAuthService<K,USERID> restfulAuthService;
+  private final RestfulAuthService<USERID> restfulAuthService;
 
   @Override
   public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
@@ -22,10 +22,6 @@ public class SystemAuthenticationSuccessHandler<K,USERID extends Long> implement
     onAuthenticationSuccess(request, response, authentication);
   }
 
-  /**
-   * @TokenHandler.createToken(authentication.getName(),null) will not throw an NullPointException
-   * Null check at TokenHandler
-   */
   @Override
   public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
       Authentication authentication) {

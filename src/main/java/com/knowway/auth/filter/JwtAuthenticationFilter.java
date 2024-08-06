@@ -4,9 +4,9 @@ package com.knowway.auth.filter;
 import com.knowway.auth.exception.AuthException;
 import com.knowway.auth.handler.AccessTokenHandler;
 import com.knowway.auth.service.AccessTokenWithRefreshTokenService;
+import com.knowway.auth.util.ClaimsWrapper;
 import com.knowway.auth.util.TypeConvertor;
 import com.knowway.auth.vo.AuthRequestHeaderPrefix;
-import com.knowway.auth.vo.ExtractHeaderKeyByRequest;
 import com.knowway.user.vo.Role;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
@@ -30,14 +30,14 @@ import org.springframework.web.filter.OncePerRequestFilter;
  * authenticated
  */
 @AllArgsConstructor
-public class JwtAuthenticationFilter<K, V> extends OncePerRequestFilter {
+public class JwtAuthenticationFilter<K, V,USERID> extends OncePerRequestFilter {
 
   /**
    * The Raw type with AccessTokenHandler is fine, just because the Generic Type is only used when
    * persisting the token, otherwise this filter just validate the token, So won't be problem
    */
-  private final AccessTokenHandler<K> accessTokenHandler;
-  private final AccessTokenWithRefreshTokenService<K, V, Long> accessTokenWithRefreshTokenService;
+  private final AccessTokenHandler accessTokenHandler;
+  private final AccessTokenWithRefreshTokenService<K, V, USERID> accessTokenWithRefreshTokenService;
   private final TypeConvertor<String, K> tokenToKeyConvertor;
   private final TypeConvertor<String, V> subjectToValueConvertor;
 
@@ -47,38 +47,58 @@ public class JwtAuthenticationFilter<K, V> extends OncePerRequestFilter {
 
     String header = request.getHeader(AuthRequestHeaderPrefix.AUTHORIZATION_HEADER);
 
-    if (header != null) {
-      try {
-        String token = ExtractHeaderKeyByRequest.extractKey(request,
-            AuthRequestHeaderPrefix.AUTHORIZATION_HEADER).substring(7);
-        if (!accessTokenHandler.isValidToken(token)) {
-          response.setStatus(401);
-        } else {
-          Role role = accessTokenHandler.getRole(token);
-          setSecurityContext(accessTokenHandler.getSubject(token), role);
-          filterChain.doFilter(request, response);
-        }
-      } catch (ExpiredJwtException expiredJwtException) {
-        String oldToken = ExtractHeaderKeyByRequest.extractKey(request,
-            AuthRequestHeaderPrefix.AUTHORIZATION_HEADER).substring(7);
-        String newToken = accessTokenWithRefreshTokenService.reAuthentication(
-            tokenToKeyConvertor.convert(oldToken),
-            subjectToValueConvertor.convert(expiredJwtException.getClaims().getSubject()),
-            expiredJwtException.getClaims());
-        response.addHeader(AuthRequestHeaderPrefix.AUTHORIZATION_HEADER,
-            AuthRequestHeaderPrefix.TOKEN_PREFIX + newToken);
-      } catch (AuthException | MalformedJwtException | StringIndexOutOfBoundsException e) {
-        response.setStatus(401);
-      }
-    } else {
+    if (header == null) {
       filterChain.doFilter(request, response);
+      return;
     }
 
+    String token = extractToken(header);
+    if (token == null) {
+      response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+      return;
+    }
+
+    try {
+      if (!accessTokenHandler.isValidToken(token)) {
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        return;
+      }
+
+      Role role = accessTokenHandler.getRole(token);
+      setSecurityContext(accessTokenHandler.getSubject(token), role);
+      filterChain.doFilter(request, response);
+
+    } catch (ExpiredJwtException expiredJwtException) {
+      handleExpiredToken(response, token, expiredJwtException);
+    } catch (AuthException | MalformedJwtException | StringIndexOutOfBoundsException e) {
+      response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+    }
   }
+
+  private String extractToken(String header) {
+    if (header.startsWith(AuthRequestHeaderPrefix.TOKEN_PREFIX)) {
+      return header.substring(AuthRequestHeaderPrefix.TOKEN_PREFIX.length());
+    }
+    return null;
+  }
+
+  private void handleExpiredToken(HttpServletResponse response,
+      String oldToken, ExpiredJwtException expiredJwtException) {
+    String newToken = accessTokenWithRefreshTokenService.reAuthentication(
+        tokenToKeyConvertor.convert(oldToken),
+        subjectToValueConvertor.convert(expiredJwtException.getClaims().getSubject()),
+        ClaimsWrapper.of(expiredJwtException.getClaims())
+    );
+
+    response.addHeader(AuthRequestHeaderPrefix.AUTHORIZATION_HEADER,
+        AuthRequestHeaderPrefix.TOKEN_PREFIX + newToken);
+    response.setStatus(HttpServletResponse.SC_OK);
+  }
+
 
   private void setSecurityContext(String subject, Role role) {
     SecurityContextHolder.getContext().setAuthentication(
-        new UsernamePasswordAuthenticationToken(Long.parseLong(subject),null,
+        new UsernamePasswordAuthenticationToken(Long.parseLong(subject), null,
             Collections.singletonList(new SimpleGrantedAuthority(role.name()))));
   }
 }
