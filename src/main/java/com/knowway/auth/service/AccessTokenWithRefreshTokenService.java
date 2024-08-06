@@ -17,7 +17,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 @Service
-public class AccessTokenWithRefreshTokenService<K, V, USERID> extends RestfulAuthService<K, USERID> {
+public class AccessTokenWithRefreshTokenService<K, V, USERID> extends RestfulAuthService<USERID> {
 
   private final TypeConvertor<String, K> tokenToKeyConvertor;
   private final TypeConvertor<USERID, V> userIdToValueConvertor;

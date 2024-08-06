@@ -13,7 +13,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.util.Map;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-public abstract class RestfulAuthService<K, USERID> implements AuthService {
+public abstract class RestfulAuthService<USERID> implements AuthService {
 
   private final TypeConvertor<USERID, String> userIdToSubjectConvertor;
   private final AccessTokenHandler accessTokenHandler;

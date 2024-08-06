@@ -20,6 +20,7 @@ import com.knowway.auth.util.TypeConvertor;
 import com.knowway.user.repository.MemberRepository;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -119,11 +120,11 @@ public class SecurityConfig<K extends String, V extends String, USERID extends L
   }
 
   @Bean("jwtAuthenticationFilter")
-  public JwtAuthenticationFilter<String, String> jwtAuthenticationFilter(
+  public JwtAuthenticationFilter<K, V,USERID> jwtAuthenticationFilter(
       AccessTokenHandler accessTokenHandler,
-      @Qualifier("tokenToKeyConverter") TypeConvertor<String, String> tokenToKeyConvertor,
-      @Qualifier("keyToTokenConvertor") TypeConvertor<String, String> subjectToValueConvertor,
-      AccessTokenWithRefreshTokenService<String, String, Long> accessTokenWithRefreshTokenService) {
+      @Qualifier("tokenToKeyConverter") TypeConvertor<String, K> tokenToKeyConvertor,
+      @Qualifier("keyToTokenConvertor") TypeConvertor<String, V> subjectToValueConvertor,
+      AccessTokenWithRefreshTokenService<K, V, USERID> accessTokenWithRefreshTokenService) {
     return new JwtAuthenticationFilter<>(accessTokenHandler, accessTokenWithRefreshTokenService,
         tokenToKeyConvertor, subjectToValueConvertor);
   }
@@ -171,7 +172,7 @@ public class SecurityConfig<K extends String, V extends String, USERID extends L
   @Qualifier("parentManager")
   @Bean
   public AuthenticationManager parentManager(PasswordEncoder encoder) {
-    return new UserAuthenticationManager(memberRepository, encoder);
+    return new UserAuthenticationManager<UUID>(memberRepository, encoder);
   }
 
   @Bean
@@ -257,7 +258,6 @@ public class SecurityConfig<K extends String, V extends String, USERID extends L
         valueAccessTokenHandler
     );
   }
-
 
     @Qualifier("keyToTokenConvertor")
     @Bean
