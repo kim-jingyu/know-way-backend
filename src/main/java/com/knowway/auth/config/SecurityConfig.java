@@ -109,6 +109,8 @@ public class SecurityConfig<K extends String, V extends String, USERID extends L
           request.requestMatchers(HttpMethod.POST, "/users/emails").permitAll();
           request.requestMatchers(HttpMethod.POST,"/depts").hasAuthority("ROLE_ADMIN");
           request.requestMatchers(HttpMethod.DELETE,"/depts/**").hasAuthority("ROLE_ADMIN");
+          request.requestMatchers(HttpMethod.DELETE,"/depts/**").hasAuthority("ROLE_ADMIN");
+
           request.requestMatchers("/admin/**").hasAuthority("ROLE_ADMIN");
           request.anyRequest().authenticated();
         })

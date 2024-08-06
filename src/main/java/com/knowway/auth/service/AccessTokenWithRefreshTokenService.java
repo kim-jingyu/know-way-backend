@@ -58,6 +58,9 @@ public class AccessTokenWithRefreshTokenService<K, V, USERID> extends RestfulAut
   @Override
   public void logout(HttpServletRequest request, HttpServletResponse response) {
     super.logout(request, response);
+    String token = request.getHeader(AuthRequestHeaderPrefix.AUTHORIZATION_HEADER)
+        .substring(AuthRequestHeaderPrefix.TOKEN_PREFIX.length());
+    refreshTokenHandler.invalidate(tokenToKeyConvertor.convert(token));
   }
 
   public String reAuthentication(K oldKey, V value, ClaimsWrapper claims) {
@@ -68,7 +71,7 @@ public class AccessTokenWithRefreshTokenService<K, V, USERID> extends RestfulAut
 
     if (!refreshTokenHandler.isValid(oldKey)) throw new AuthException("Expired");
     refreshTokenHandler.invalidate(oldKey);
-    refreshTokenHandler.persistToken(newKey, value);
+    refreshTokenHandler.reIssue(newKey, value);
 
     return accessToken;
   }

@@ -1,7 +1,7 @@
 package com.knowway.auth.service;
 
 import com.knowway.auth.exception.AuthException;
-import java.util.concurrent.TimeUnit;
+import java.time.Duration;
 import org.springframework.data.redis.core.RedisTemplate;
 
 public class AccessTokenSetAsBlackListWhenInvalidating implements
@@ -22,7 +22,9 @@ public class AccessTokenSetAsBlackListWhenInvalidating implements
         if (Boolean.TRUE.equals(blackListRedisTemplate.hasKey(key))) {
             throw new AuthException("이미 만료된 인증 정보입니다.");
         }
-        blackListRedisTemplate.expire(key, expirationTime, TimeUnit.MILLISECONDS);
+        blackListRedisTemplate.opsForValue().set(key, "BLACKLISTED");
+        blackListRedisTemplate.expire(key, Duration.ofSeconds(expirationTime));
+
     }
 
     @Override
