@@ -17,6 +17,9 @@ public class DepartmentStoreResponse {
     private Long departmentStoreId;
     private String departmentStoreName;
     private String departmentStoreBranch;
+    private Double departmentStoreLatitude;
+    private Double departmentStoreLongitude;
+
     @Builder.Default
     private List<DepartmentStoreFloorResponse> departmentStoreFloorResponseList = new ArrayList<>();
 
@@ -25,6 +28,8 @@ public class DepartmentStoreResponse {
                 .departmentStoreId(departmentStore.getDepartmentStoreId())
                 .departmentStoreName(departmentStore.getDepartmentStoreName())
                 .departmentStoreBranch(departmentStore.getDepartmentStoreBranch())
+                .departmentStoreLatitude(departmentStore.getDepartmentStoreLatitude())
+                .departmentStoreLongitude(departmentStore.getDepartmentStoreLongitude())
                 .build();
         for (DepartmentStoreFloor departmentStoreFloor : departmentStore.getDepartmentStoreFloorList()) {
             response.addDepartmentFloorResponse(DepartmentStoreFloorResponse.of(departmentStoreFloor));
