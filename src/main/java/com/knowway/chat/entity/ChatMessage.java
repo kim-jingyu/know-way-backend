@@ -24,9 +24,8 @@ public class ChatMessage extends BaseEntity {
     @Column(name = "message_id", nullable = false)
     private Long messageId;
 
-    @JoinColumn(name = "member_chat_message_id")
-    @ManyToOne
-    private Member member;
+    @Column(name = "member_chat_id",unique = true,updatable = false)
+    private Long memberChatId;
 
     @JoinColumn(name = "department_store_id")
     @ManyToOne
