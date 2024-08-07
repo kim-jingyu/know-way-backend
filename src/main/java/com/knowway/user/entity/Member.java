@@ -29,7 +29,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @Entity
 @Table(name = "member",
-       indexes = @Index(name = "idx_member_chat_message_id", columnList = "member_chat_message_id"))
+       indexes = @Index(name = "idx_member_chat_message_id", columnList = "member_chat_message_id",unique = true))
 public class Member extends BaseEntity {
 
     @Id
@@ -54,7 +54,7 @@ public class Member extends BaseEntity {
     private List<Record> recordList;
 
     @InjectSequenceValue(sequencename = "member_chat_message_id_seq")
-    @Column(name = "member_chat_message_id", nullable = false, unique = true)
+    @Column(name = "member_chat_message_id", nullable = false, unique = true, updatable = false)
     private Long chatMessageId;
 
 }

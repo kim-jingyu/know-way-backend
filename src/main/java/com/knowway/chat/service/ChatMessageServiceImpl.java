@@ -34,15 +34,16 @@ public class ChatMessageServiceImpl implements ChatMessageService {
     @Transactional
     @Override
     public ChatMessage postMessage(ChatMessageRequest chatMessageRequest) {
-        DepartmentStore departmentStore = departmentStoreRepository.getById(chatMessageRequest.getDepartmentStoreId());
+        DepartmentStore departmentStore = departmentStoreRepository.getById(
+            chatMessageRequest.getDepartmentStoreId());
         Member member = memberRepository.findByChatMessageId(chatMessageRequest.getChatMessageId())
-                .orElseThrow(UserNotFoundException::new);
+            .orElseThrow(UserNotFoundException::new);
         ChatMessage chatMessage = ChatMessage.builder()
-                .member(member)
-                .departmentStore(departmentStore)
-                .messageContent(chatMessageRequest.getMessageContent())
-                .messageNickname(chatMessageRequest.getMessageNickname())
-                .build();
+            .memberChatId(member.getChatMessageId())
+            .departmentStore(departmentStore)
+            .messageContent(chatMessageRequest.getMessageContent())
+            .messageNickname(chatMessageRequest.getMessageNickname())
+            .build();
 
         return chatMessageRepository.save(chatMessage);
     }
@@ -53,7 +54,7 @@ public class ChatMessageServiceImpl implements ChatMessageService {
         Page<ChatMessage> chatMessages = chatMessageRepository.findByDepartmentStore_DepartmentStoreIdOrderByCreatedAtDesc(departmentStoreId, pageable);
         List<ChatMessageResponse> chatMessageResponses = chatMessages.stream()
                 .map(message -> new ChatMessageResponse(
-                        message.getMember().getChatMessageId(),
+                        message.getMemberChatId(),
                         message.getMessageId(),
                         message.getCreatedAt(),
                         message.getMessageNickname(),
