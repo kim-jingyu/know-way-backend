@@ -16,4 +16,5 @@ public class RecordResponse {
     private String recordLatitude;
     private String recordLongitude;
     private String recordPath;
+    private Long floorId;
 }
