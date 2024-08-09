@@ -33,7 +33,7 @@ Page<UserRecordDto> findUserRecordsByMemberIdAndRecordIsSelected(
   Optional<Record> findByMemberIdAndId(Long memberId, Long recordId);
 
   @Query("SELECT new com.knowway.record.dto.RecordResponse(" +
-          "r.id, r.recordTitle, r.recordLatitude, r.recordLongitude, r.recordPath) " +
+          "r.id, r.recordTitle, r.recordLatitude, r.recordLongitude, r.recordPath, dsf.departmentStoreFloorId) " +
           "FROM Record r " +
           "JOIN r.departmentStoreFloor dsf " +
           "JOIN r.departmentStore ds " +
