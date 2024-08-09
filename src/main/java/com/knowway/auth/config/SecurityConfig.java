@@ -90,7 +90,7 @@ public class SecurityConfig<K extends String, V extends String, USERID extends L
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http,
       @Qualifier("userAuthenticationFilter") UsernamePasswordAuthenticationFilter userAuthenticationFilter,
-      @Qualifier("jwtAuthenticationFilter") OncePerRequestFilter jwtAuthorizationFilter
+      @Qualifier("jwtAuthorizationFilter") OncePerRequestFilter jwtAuthorizationFilter
   )
       throws Exception {
     http
