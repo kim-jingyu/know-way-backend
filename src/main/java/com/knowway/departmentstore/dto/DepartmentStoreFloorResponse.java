@@ -11,7 +11,7 @@ public class DepartmentStoreFloorResponse {
     private String departmentStoreFloorMapPath;
     private String departmentStoreFloor;
 
-    public static DepartmentStoreFloorResponse of(DepartmentStoreFloor departmentStoreFloor) {
+    public static DepartmentStoreFloorResponse from(DepartmentStoreFloor departmentStoreFloor) {
         return DepartmentStoreFloorResponse.builder()
                 .departmentStoreFloorId(departmentStoreFloor.getDepartmentStoreFloorId())
                 .departmentStoreFloorMapPath(departmentStoreFloor.getDepartmentStoreFloorMapPath())

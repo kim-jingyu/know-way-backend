@@ -8,7 +8,6 @@ import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
 
 @Data
 @Builder
@@ -23,7 +22,7 @@ public class DepartmentStoreResponse {
     @Builder.Default
     private List<DepartmentStoreFloorResponse> departmentStoreFloorResponseList = new ArrayList<>();
 
-    public static DepartmentStoreResponse of(DepartmentStore departmentStore) {
+    public static DepartmentStoreResponse from(DepartmentStore departmentStore) {
         DepartmentStoreResponse response = DepartmentStoreResponse.builder()
                 .departmentStoreId(departmentStore.getDepartmentStoreId())
                 .departmentStoreName(departmentStore.getDepartmentStoreName())
@@ -32,7 +31,7 @@ public class DepartmentStoreResponse {
                 .departmentStoreLongitude(departmentStore.getDepartmentStoreLongitude())
                 .build();
         for (DepartmentStoreFloor departmentStoreFloor : departmentStore.getDepartmentStoreFloorList()) {
-            response.addDepartmentFloorResponse(DepartmentStoreFloorResponse.of(departmentStoreFloor));
+            response.addDepartmentFloorResponse(DepartmentStoreFloorResponse.from(departmentStoreFloor));
         }
         return response;
     }

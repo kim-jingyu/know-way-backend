@@ -12,7 +12,7 @@ public class DepartmentStoreFloorMapResponse {
     private Long departmentStoreFloorId;
     private String departmentStoreFloorMapPath;
 
-    public static DepartmentStoreFloorMapResponse of(DepartmentStoreFloor departmentStoreFloor) {
+    public static DepartmentStoreFloorMapResponse from(DepartmentStoreFloor departmentStoreFloor) {
         return DepartmentStoreFloorMapResponse.builder()
                 .departmentStoreFloorId(departmentStoreFloor.getDepartmentStoreFloorId())
                 .departmentStoreFloorMapPath(departmentStoreFloor.getDepartmentStoreFloorMapPath())

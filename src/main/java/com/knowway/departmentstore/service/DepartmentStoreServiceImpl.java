@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import jdk.jshell.spi.ExecutionControl.UserException;
+
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -57,7 +57,7 @@ public class DepartmentStoreServiceImpl implements DepartmentStoreService {
     @Override
     public Page<DepartmentStoreResponse> getAllDepartmentStoreList(Integer size, Integer page) {
         return departmentStoreRepository.findAll(PageRequest.of(page, size))
-                .map(DepartmentStoreResponse::of);
+                .map(DepartmentStoreResponse::from);
     }
 
     @Override
@@ -68,7 +68,7 @@ public class DepartmentStoreServiceImpl implements DepartmentStoreService {
             if (distance <= DISTANCE) {
                 nearByStores.add(StoreDistance.builder()
                     .distance(distance)
-                    .response(DepartmentStoreResponse.of(departmentStore))
+                    .response(DepartmentStoreResponse.from(departmentStore))
                     .build());
             }
         }
@@ -80,20 +80,20 @@ public class DepartmentStoreServiceImpl implements DepartmentStoreService {
 
     @Override
     public DepartmentStoreFloorMapResponse getDepartmentStoreFloorMap(Long deptId, String floor) {
-        return DepartmentStoreFloorMapResponse.of(departmentStoreFloorRepository.findByDepartmentStoreAndDepartmentStoreFloor(departmentStoreRepository.getById(deptId), floor));
+        return DepartmentStoreFloorMapResponse.from(departmentStoreFloorRepository.findByDepartmentStoreAndDepartmentStoreFloor(departmentStoreRepository.getById(deptId), floor));
     }
 
     @Override
     public List<DepartmentStoreFloorMapResponse> getDepartmentStoreFloorList(Long departmentStoreId) {
         return departmentStoreRepository.getById(departmentStoreId).getDepartmentStoreFloorList().stream()
-                .map(DepartmentStoreFloorMapResponse::of)
+                .map(DepartmentStoreFloorMapResponse::from)
                 .toList();
     }
 
     @Override
     public List<DepartmentStoreResponse> getDepartmentStoreByBranch(String departmentStoreBranch) {
         return departmentStoreRepository.findByDepartmentStoreBranchContainingIgnoreCase(departmentStoreBranch).stream()
-                .map(DepartmentStoreResponse::of)
+                .map(DepartmentStoreResponse::from)
                 .toList();
     }
 
