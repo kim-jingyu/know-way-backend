@@ -8,6 +8,14 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * 관리자 관련 컨트롤러
+ *
+ * @author 이주현
+ * @since 2024.07.28
+ * @version 1.0
+ */
+
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/admin")
