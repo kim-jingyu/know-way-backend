@@ -9,8 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * Authentication 컨트롤러
- *
+ * AuthController
  * @author 구지웅
  * @since 2024.8.1
  * @version 1.0
