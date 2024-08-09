@@ -12,7 +12,14 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+/**
+ * UserAuthenticationManager
+ *
+ * @author 구지웅
+ * @since 2024.8.1
+ * @version 1.0
 
+ */
 @RequiredArgsConstructor
 public class UserAuthenticationManager implements AuthenticationManager {
 

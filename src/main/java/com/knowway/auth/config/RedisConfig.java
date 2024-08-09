@@ -10,7 +10,14 @@ import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
+/**
+ * Redis BlackList 토큰과 Refresh 토큰 Config
+ *
+ * @author 구지웅
+ * @since 2024.8.1
+ * @version 1.0
 
+ */
 @RequiredArgsConstructor
 @Configuration
 public class RedisConfig<K extends String, V extends String> {

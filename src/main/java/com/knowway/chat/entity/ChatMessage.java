@@ -24,7 +24,7 @@ public class ChatMessage extends BaseEntity {
     @Column(name = "message_id", nullable = false)
     private Long messageId;
 
-    @Column(name = "member_chat_id",unique = true,updatable = false)
+    @Column(name = "member_chat_id",updatable = false)
     private Long memberChatId;
 
     @JoinColumn(name = "department_store_id")

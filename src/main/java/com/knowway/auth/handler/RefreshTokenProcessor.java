@@ -5,6 +5,14 @@ import com.knowway.auth.service.ReAuthenticationStrategy;
 import com.knowway.auth.service.RefreshTokenPersistLocationStrategy;
 import lombok.RequiredArgsConstructor;
 
+/**
+ * RefreshTokenProcessor
+ *
+ * @author 구지웅
+ * @since 2024.8.1
+ * @version 1.0
+
+ */
 @RequiredArgsConstructor
 public class RefreshTokenProcessor<K,V> {
 

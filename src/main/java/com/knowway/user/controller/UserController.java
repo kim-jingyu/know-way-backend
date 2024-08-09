@@ -21,7 +21,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+/**
+ * UserController
+ *
+ * @author 구지웅
+ * @since 2024.8.1
+ * @version 1.0
 
+ */
 @RequiredArgsConstructor
 @RequestMapping(value = "/users")
 @RestController

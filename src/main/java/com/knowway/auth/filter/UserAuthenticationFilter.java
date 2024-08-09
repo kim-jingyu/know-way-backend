@@ -14,6 +14,14 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+/**
+ * JwtAuthorizationFilter
+ *
+ * @author 구지웅
+ * @since 2024.8.1
+ * @version 1.0
+
+ */
 public class UserAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
   private final AuthenticationManager authenticationManager;

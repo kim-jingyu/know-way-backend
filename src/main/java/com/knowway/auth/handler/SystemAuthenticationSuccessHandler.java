@@ -10,7 +10,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
+/**
+ * SystemAuthenticationSuccessHandler
+ *
+ * @author 구지웅
+ * @since 2024.8.1
+ * @version 1.0
 
+ */
 @RequiredArgsConstructor
 public class SystemAuthenticationSuccessHandler<USERID> implements AuthenticationSuccessHandler {
 
