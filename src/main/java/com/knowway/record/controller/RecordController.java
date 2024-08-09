@@ -1,11 +1,9 @@
 package com.knowway.record.controller;
 
-import com.knowway.departmentstore.dto.DepartmentStoreFloorMapResponse;
 import com.knowway.record.dto.RecordRequest;
 import com.knowway.record.dto.RecordResponse;
 import com.knowway.record.service.RecordService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -14,10 +12,16 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
+/**
+ * 녹음 관련 컨트롤러
+ *
+ * @author 박유진
+ * @since 2024.07.26
+ * @version 1.0
+ */
 @RequiredArgsConstructor
 @RequestMapping(value = "/records")
 @RestController
-@Slf4j
 public class RecordController {
 
     private final RecordService recordService;
