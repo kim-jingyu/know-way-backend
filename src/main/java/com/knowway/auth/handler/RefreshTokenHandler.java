@@ -2,6 +2,14 @@ package com.knowway.auth.handler;
 
 import lombok.RequiredArgsConstructor;
 
+/**
+ * RefreshTokenHandler
+ *
+ * @author 구지웅
+ * @since 2024.8.1
+ * @version 1.0
+
+ */
 @RequiredArgsConstructor
 public class RefreshTokenHandler<K, V> {
 

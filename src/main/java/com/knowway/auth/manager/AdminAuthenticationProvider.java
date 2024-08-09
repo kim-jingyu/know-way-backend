@@ -14,6 +14,14 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+/**
+ * AdminAuthenticationProvider
+ *
+ * @author 구지웅
+ * @since 2024.8.1
+ * @version 1.0
+
+ */
 @RequiredArgsConstructor
 public class AdminAuthenticationProvider<ADMINID extends Long> implements AuthenticationProvider {
 

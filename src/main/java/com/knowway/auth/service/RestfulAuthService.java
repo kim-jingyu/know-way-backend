@@ -12,7 +12,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.Map;
 import org.springframework.security.core.context.SecurityContextHolder;
-
+/**
+ * * 작성자: 구지웅
+ */
 public abstract class RestfulAuthService<USERID> implements AuthService {
 
   private final TypeConvertor<USERID, String> userIdToSubjectConvertor;

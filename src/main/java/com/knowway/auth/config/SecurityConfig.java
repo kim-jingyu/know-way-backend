@@ -1,6 +1,6 @@
 package com.knowway.auth.config;
 
-import com.knowway.auth.filter.JwtAuthenticationFilter;
+import com.knowway.auth.filter.JwtAuthorizationFilter;
 import com.knowway.auth.filter.UserAuthenticationFilter;
 import com.knowway.auth.handler.AccessTokenHandler;
 import com.knowway.auth.handler.RefreshTokenHandler;
@@ -46,7 +46,14 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.filter.OncePerRequestFilter;
+/**
+ * SecurityConfig
+ *
+ * @author 구지웅
+ * @since 2024.8.1
+ * @version 1.0
 
+ */
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig<K extends String, V extends String, USERID extends Long> {
@@ -83,7 +90,7 @@ public class SecurityConfig<K extends String, V extends String, USERID extends L
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http,
       @Qualifier("userAuthenticationFilter") UsernamePasswordAuthenticationFilter userAuthenticationFilter,
-      @Qualifier("jwtAuthenticationFilter") OncePerRequestFilter jwtAuthenticationFilter
+      @Qualifier("jwtAuthenticationFilter") OncePerRequestFilter jwtAuthorizationFilter
   )
       throws Exception {
     http
@@ -115,18 +122,18 @@ public class SecurityConfig<K extends String, V extends String, USERID extends L
           request.anyRequest().authenticated();
         })
         .addFilterBefore(userAuthenticationFilter, CorsFilter.class)
-        .addFilterAfter(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+        .addFilterAfter(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
 
     return http.build();
   }
 
-  @Bean("jwtAuthenticationFilter")
-  public JwtAuthenticationFilter<K, V,USERID> jwtAuthenticationFilter(
+  @Bean("jwtAuthorizationFilter")
+  public JwtAuthorizationFilter<K, V,USERID> jwtAuthorizationFilter(
       AccessTokenHandler accessTokenHandler,
       @Qualifier("tokenToKeyConverter") TypeConvertor<String, K> tokenToKeyConvertor,
       @Qualifier("keyToTokenConvertor") TypeConvertor<String, V> subjectToValueConvertor,
       AccessTokenWithRefreshTokenService<K, V, USERID> accessTokenWithRefreshTokenService) {
-    return new JwtAuthenticationFilter<>(accessTokenHandler, accessTokenWithRefreshTokenService,
+    return new JwtAuthorizationFilter<>(accessTokenHandler, accessTokenWithRefreshTokenService,
         tokenToKeyConvertor, subjectToValueConvertor);
   }
 
@@ -216,11 +223,7 @@ public class SecurityConfig<K extends String, V extends String, USERID extends L
     return new RefreshTokenHandler<>(refreshTokenProcessor());
   }
 
-  @Qualifier("tokenToKeyConverter")
-  @Bean
-  public static TypeConvertor<String, String> tokenToKeyConverter() {
-    return token -> token;
-  }
+
 
 
   @Qualifier("accessTokenHandler")
@@ -257,6 +260,12 @@ public class SecurityConfig<K extends String, V extends String, USERID extends L
 
   @Configuration
   public static class Convertor {
+
+    @Qualifier("tokenToKeyConverter")
+    @Bean
+    public static TypeConvertor<String, String> tokenToKeyConverter() {
+      return token -> token;
+    }
 
     @Qualifier("keyToTokenConvertor")
     @Bean

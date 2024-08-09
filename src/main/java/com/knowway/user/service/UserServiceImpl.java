@@ -21,6 +21,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
@@ -31,6 +32,7 @@ public class UserServiceImpl implements UserService {
   private final MemberRepository memberRepository;
   private final PasswordEncoder encoder;
 
+  @Transactional
   @Override
   public void signUp(UserSignUpRequest signUpDto) {
     userDuplicationChecker.emailDuplicationChecker(signUpDto.getEmail());

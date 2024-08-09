@@ -23,14 +23,23 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 /**
- * This is the JwtAuthenticationFilter, which can be used when there is token at header or not For
+ * This is the JwtAuthorizationFilter, which can be used when there is token at header or not For
  * managing the authorization in one place this filter isn't set shouldNotFilter
  *
  * @see com.knowway.auth.config.SecurityConfig When user is authenticated set the user is
  * authenticated
  */
+
+/**
+ * JwtAuthorizationFilter
+ *
+ * @author 구지웅
+ * @since 2024.8.1
+ * @version 1.0
+
+ */
 @AllArgsConstructor
-public class JwtAuthenticationFilter<K, V,USERID> extends OncePerRequestFilter {
+public class JwtAuthorizationFilter<K, V,USERID> extends OncePerRequestFilter {
 
   /**
    * The Raw type with AccessTokenHandler is fine, just because the Generic Type is only used when
