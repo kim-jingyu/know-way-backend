@@ -9,6 +9,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * 채팅 관련 컨트롤러
+ *
+ * @author 박유진
+ * @since 2024.07.26
+ * @version 1.0
+ */
 @RequiredArgsConstructor
 @RequestMapping(value = "/chats")
 @RestController
