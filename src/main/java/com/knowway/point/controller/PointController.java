@@ -6,6 +6,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * 포인트 관련 컨트롤러
+ *
+ * @author 이주현
+ * @since 2024.08.04
+ * @version 1.0
+ */
+
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/admin")
