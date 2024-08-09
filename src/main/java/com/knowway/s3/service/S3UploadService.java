@@ -10,6 +10,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
+/**
+ * S3 업로드 서비스
+ *
+ * @author 김진규, 박유진
+ * @since 2024.07.25
+ * @version 1.0
+ */
 @Service
 public class S3UploadService {
 

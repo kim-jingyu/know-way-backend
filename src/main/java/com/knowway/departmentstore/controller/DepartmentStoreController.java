@@ -16,6 +16,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
+/**
+ * 백화점 컨트롤러
+ *
+ * @author 김진규
+ * @since 2024.07.25
+ * @version 1.0
+ */
 @RestController
 @RequestMapping(value = "/depts")
 @RequiredArgsConstructor
