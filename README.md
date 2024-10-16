@@ -1,3 +1,10 @@
+# Know-Way : 실시간 위치 기반 백화점 음성 안내 서비스
+
+## 🎯 백엔드에서 내가 구현한 기능
+- 백화점 생성
+- 실시간 위치 기반 50km 이내 가까운 백화점 정렬/검색
+- 백화점 삭제
+
 ## Description
 
 <div align="center">
@@ -65,11 +72,3 @@ https://leejuhyeon.notion.site/API-a13db2ca5b294913ba9eef5bb2395e47
 
 
 <br/>
-
-## Related
-### Android: https://github.com/knowway-service/android
-
-
-## Contacts
-
-📫 How to reach me **swc05161@gmail.com**
